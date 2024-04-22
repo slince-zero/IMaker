@@ -5,6 +5,8 @@ import { NextUIProvider } from '@nextui-org/react'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <NextUIProvider>
-    <App />
+    <main className='dark text-foreground bg-background'>
+      <App />
+    </main>
   </NextUIProvider>
 )
