@@ -6,6 +6,7 @@ import {
   Avatar,
   Button,
   Input,
+  ScrollShadow,
 } from '@nextui-org/react'
 import { ImgLogo, UploadLogo } from './logo'
 
@@ -51,18 +52,20 @@ export default function LeftBoard() {
         </Navbar>
       </>
 
-      <div className='flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap scrollbar-thin scrollbar-color-auto '>
-        {imageList.map((item) => {
-          return (
-            <img
-              key={item?.id}
-              src={item?.urls.small}
-              alt={item?.alt_description}
-              className='transition-transform duration-200 transform hover:scale-105 rounded m-2 cursor-pointer w-5/12 object-cover h-24'
-            />
-          )
-        })}
-      </div>
+      <ScrollShadow>
+        <div className='flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap scrollbar-thin scrollbar-color-auto '>
+          {imageList.map((item) => {
+            return (
+              <img
+                key={item?.id}
+                src={item?.urls.small}
+                alt={item?.alt_description}
+                className='transition-transform duration-200 transform hover:scale-105 rounded m-2 cursor-pointer w-5/12 object-cover h-24'
+              />
+            )
+          })}
+        </div>
+      </ScrollShadow>
 
       <>
         <Navbar>
