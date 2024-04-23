@@ -9,10 +9,10 @@ export default function Main() {
       <div className='left min-w-80 max-w-80'>
         <LeftBoard />
       </div>
-      <div className='center flex-grow overflow-x-auto '>
+      <div className='center flex items-center justify-center w-full px-5  overflow-x-auto '>
         <CenterBoard />
       </div>
-      <div className='right w-[20%] min-w-80 max-w-80'>
+      <div className='right min-w-80 max-w-80'>
         <RightBoard />
       </div>
     </div>
