@@ -185,9 +185,9 @@ export default function RightBoard() {
           placeholder='输入作者'
         />
       </div>
-      <Divider />
-      <div className='w-full mt-4 px-4'>
-        <div className='text-gray-400 text-sm'>下载图像</div>
+      {/* <Divider /> */}
+      <div className='w-full mt-4 px-4 bg-[#181f27]'>
+        <div className='text-gray-100 text-sm py-2'>下载图像</div>
         <div className='flex justify-between my-3'>
           <Button variant='flat'>JPG</Button>
           <Button variant='flat'>PNG</Button>
