@@ -20,6 +20,7 @@ export default function LeftBoard() {
     isLoading,
     getImage,
     onSearchKeyDown,
+    setImgInfo,
   } = useContext(ImgContext)
 
   return (
@@ -58,10 +59,11 @@ export default function LeftBoard() {
               }) => {
                 return (
                   <img
-                    key={item?.id}
-                    src={item?.urls.small}
-                    alt={item?.alt_description}
+                    key={item.id}
+                    src={item.urls.small}
+                    alt={item.alt_description}
                     className='transition-transform duration-200 transform hover:scale-105 rounded m-2 cursor-pointer w-5/12 object-cover h-24'
+                    onClick={() => setImgInfo(item)}
                   />
                 )
               }

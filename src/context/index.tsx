@@ -20,6 +20,9 @@ export default function ImgContextProvider({
   const [imageList, setImageList] = useState<ImageItem[]>([])
   const [searchValue, setSearchValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  // setImgInfo在left组件中存储图片数据，imgInfo给center组件传递图片数据
+  const [imgInfo, setImgInfo] = useState<any>({})
+
   // 获取图片
   async function getImage(searchText: string = '') {
     try {
@@ -74,6 +77,8 @@ export default function ImgContextProvider({
         setIsLoading,
         getImage,
         onSearchKeyDown,
+        setImgInfo,
+        imgInfo,
       }}>
       {children}
     </ImgContext.Provider>
