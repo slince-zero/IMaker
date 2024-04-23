@@ -78,7 +78,7 @@ export default function RightBoard() {
         <Divider />
 
         {/* 遮罩+颜色选择 */}
-        <div className='w-full'>
+        <div className='w-full flex flex-col justify-around'>
           <div className='flex w-full items-center justify-between'>
             <div className='w-4/5'>
               <Input label='遮罩' />
@@ -129,7 +129,7 @@ export default function RightBoard() {
             maxValue={100}
             minValue={0}
             defaultValue={40}
-            className='max-w-md'
+            className='max-w-md my-4'
           />
         </div>
         <Divider />
