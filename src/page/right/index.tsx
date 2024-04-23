@@ -66,7 +66,7 @@ export default function RightBoard() {
       <div className='flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap p-2'>
         <Select
           label='比例'
-          className=''>
+          className='max-w-xs py-2'>
           {animals.map((animal) => (
             <SelectItem
               key={animal}
@@ -78,8 +78,8 @@ export default function RightBoard() {
         <Divider />
 
         {/* 遮罩+颜色选择 */}
-        <div className='w-full flex flex-col justify-around'>
-          <div className='flex w-full items-center justify-between'>
+        <div className='w-full flex flex-col py-2'>
+          <div className='flex w-full items-center justify-between '>
             <div className='w-4/5'>
               <Input label='遮罩' />
             </div>
@@ -129,14 +129,14 @@ export default function RightBoard() {
             maxValue={100}
             minValue={0}
             defaultValue={40}
-            className='max-w-md my-4'
+            className='max-w-md mt-5'
           />
         </div>
         <Divider />
 
         <Select
           label='字体'
-          className=''>
+          className='my-2'>
           {animals.map((animal) => (
             <SelectItem
               key={animal}
@@ -148,7 +148,7 @@ export default function RightBoard() {
 
         <Select
           label='水印'
-          className=''>
+          className='my-2'>
           {animals.map((animal) => (
             <SelectItem
               key={animal}
@@ -159,7 +159,7 @@ export default function RightBoard() {
         </Select>
 
         <Tabs
-          className='w-full'
+          className='w-full my-2'
           classNames={{
             tabList: 'w-full',
           }}
@@ -175,7 +175,7 @@ export default function RightBoard() {
         <Textarea
           label='标题'
           placeholder='输入标题'
-          className=' py-2'
+          className='py-2'
         />
 
         <Input
