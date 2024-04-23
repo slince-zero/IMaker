@@ -2,6 +2,7 @@
 import LeftBoard from '@/page/left'
 import CenterBoard from '@/page/center'
 import RightBoard from '@/page/right'
+
 export default function Main() {
   return (
     <div className='conatainer flex h-screen overflow-x-hidden'>
