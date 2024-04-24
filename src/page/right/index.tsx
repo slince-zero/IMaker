@@ -17,6 +17,7 @@ import {
   Tabs,
   Tab,
   Divider,
+  SelectSection,
 } from '@nextui-org/react'
 import { useState } from 'react'
 import { CirclePicker } from 'react-color'
@@ -30,7 +31,24 @@ import {
 
 export default function RightBoard() {
   const [hexColor, setHexColor] = useState('')
-  const animals = ['cat', 'dog', '22']
+  const animals = ['cat', 'dog', '22', '22', '22', '22', '22', '22', '22', '22']
+
+  const img_aspect_x_list = [
+    // 横屏
+    { label: '1 : 1', value: 'aspect-square', description: '900x450' },
+    { label: '2 : 1', value: 'aspect-[2/1]', description: '900x450' },
+    { label: '3 : 2', value: 'aspect-[3/2]', description: '900x450' },
+    { label: '4 : 3', value: 'aspect-[4/3]', description: '900x450' },
+    { label: '16: 9', value: 'aspect-[16/9]', description: '900x450' },
+  ]
+
+  const img_aspect_y_list = [
+    //  竖屏
+    { label: '1:2', value: 'aspect-[1/2]', description: '900x450' },
+    { label: '2:3', value: 'aspect-[2/3]', description: '900x450' },
+    { label: '3:4', value: 'aspect-[3/4]', description: '900x450' },
+    { label: '9:16', value: 'aspect-[9/16]', description: '900x450' },
+  ]
 
   function handleChangeCompleteColor(color: any) {
     setHexColor(color.hex.toUpperCase())
@@ -68,13 +86,28 @@ export default function RightBoard() {
         <Select
           label='比例'
           className='max-w-xs py-2'>
-          {animals.map((animal) => (
-            <SelectItem
-              key={animal}
-              value={animal}>
-              {animal}
-            </SelectItem>
-          ))}
+          <SelectSection
+            showDivider
+            title='横屏'>
+            {img_aspect_x_list.map((item) => (
+              <SelectItem
+                key={item.value}
+                value={item.value}>
+                {item.label}
+              </SelectItem>
+            ))}
+          </SelectSection>
+          <SelectSection
+            showDivider
+            title='竖屏'>
+            {img_aspect_y_list.map((item) => (
+              <SelectItem
+                key={item.value}
+                value={item.value}>
+                {item.label}
+              </SelectItem>
+            ))}
+          </SelectSection>
         </Select>
         <Divider />
 
