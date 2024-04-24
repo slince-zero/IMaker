@@ -64,6 +64,7 @@ export default function RightBoard() {
       </>
 
       <div className='flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap p-2'>
+        {/* --nextui-content1: 240 5.88% 10%; */}
         <Select
           label='比例'
           className='max-w-xs py-2'>
