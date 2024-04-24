@@ -22,6 +22,10 @@ export default function ImgContextProvider({
   const [isLoading, setIsLoading] = useState(false)
   // setImgInfo在left组件中存储图片数据，imgInfo给center组件传递图片数据
   const [imgInfo, setImgInfo] = useState<any>({})
+  // 用户上传图片的state
+  const [uploadCurrentImage, setUploadCurrentImage] = useState<any>(null)
+  // 用于判断是否是上传图片，还是默认通过API获取的图片
+  const [isUpload, setIsUpload] = useState(false)
 
   // 获取图片
   async function getImage(searchText: string = '') {
@@ -66,6 +70,19 @@ export default function ImgContextProvider({
     }
   }
 
+  // 上传图片
+  function uploadImage(file: any) {
+    try {
+      if (file) {
+        const newImageUrl = URL.createObjectURL(file) // 简易本地示例
+        setUploadCurrentImage({ urls: { regular: newImageUrl } }) // 设置为能够展示格式
+        setIsUpload(true)
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   return (
     <ImgContext.Provider
       value={{
@@ -79,6 +96,10 @@ export default function ImgContextProvider({
         onSearchKeyDown,
         setImgInfo,
         imgInfo,
+        uploadImage,
+        uploadCurrentImage,
+        isUpload,
+        setIsUpload,
       }}>
       {children}
     </ImgContext.Provider>

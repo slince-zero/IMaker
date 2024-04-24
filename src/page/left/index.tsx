@@ -21,7 +21,18 @@ export default function LeftBoard() {
     getImage,
     onSearchKeyDown,
     setImgInfo,
+    uploadImage,
+    setIsUpload,
   } = useContext(ImgContext)
+
+  function handleUploadImage(event: any) {
+    const file = event.target.files[0]
+    if (file) {
+      uploadImage(file)
+      // 浏览器对于文件重新选择，不会执行上次的操作，所以这里清空值，让上传相同图片可以执行
+      event.target.value = ''
+    }
+  }
 
   return (
     <div className='flex flex-col bg-slate-500 h-screen'>
@@ -63,7 +74,10 @@ export default function LeftBoard() {
                     src={item.urls.small}
                     alt={item.alt_description}
                     className='transition-transform duration-200 transform hover:scale-105 rounded m-2 cursor-pointer w-5/12 object-cover h-24'
-                    onClick={() => setImgInfo(item)}
+                    onClick={() => {
+                      setImgInfo(item)
+                      setIsUpload(false)
+                    }}
                   />
                 )
               }
@@ -74,11 +88,20 @@ export default function LeftBoard() {
 
       <>
         <Navbar>
-          <Button
-            variant='flat'
-            isIconOnly>
-            <UploadLogo />
-          </Button>
+          {/* 上传图片 */}
+          <label>
+            <input
+              type='file'
+              onChange={handleUploadImage}
+              className='hidden'
+            />
+            <Button
+              variant='flat'
+              isIconOnly
+              as='span'>
+              <UploadLogo />
+            </Button>
+          </label>
 
           <Input
             type='search'
