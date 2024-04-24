@@ -9,7 +9,7 @@ export default function Main() {
       <div className='left min-w-80 max-w-80'>
         <LeftBoard />
       </div>
-      <div className='center flex items-center justify-center w-full px-5  overflow-x-auto '>
+      <div className='center flex items-center justify-center w-full px-5  overflow-x-auto min-w-[800px]'>
         <CenterBoard />
       </div>
       <div className='right min-w-80 max-w-80'>
