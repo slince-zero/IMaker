@@ -10,6 +10,7 @@ export default function CenterBoard() {
     titleValue,
     fontValue,
     fontSizeValue,
+    authorPosition,
   } = useContext(ImgContext)
   const [isLoading, setIsLoading] = useState(false)
   // console.log(uploadCurrentImage)
@@ -61,7 +62,12 @@ export default function CenterBoard() {
       </div>
 
       {/* autor 显示在图片上 */}
-      <div className='absolute bottom-0 right-0 p-3 text-white'>
+      <div
+        className={
+          authorPosition === 'default'
+            ? 'absolute bottom-0 right-0 p-2'
+            : authorPosition
+        }>
         {authorValue}
       </div>
     </div>

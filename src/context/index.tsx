@@ -28,6 +28,9 @@ export default function ImgContextProvider({
   const [isUpload, setIsUpload] = useState(false)
   // 作者标签值
   const [authorValue, setAuthorValue] = useState('@IMker')
+
+  // 作者水印位置
+  const [authorPosition, setAuthorPosition] = useState('default')
   // 标题&文案
   const [titleValue, setTitleValue] = useState('花开花落，你陪了我多少年')
 
@@ -103,6 +106,13 @@ export default function ImgContextProvider({
     setFontSizeValue(value)
   }
 
+  // 设置作者水印位置
+  function handleAuthorPosition(e) {
+    console.log(e);
+    
+    // setAuthorPosition(value)
+  }
+
   return (
     <ImgContext.Provider
       value={{
@@ -129,6 +139,8 @@ export default function ImgContextProvider({
         handleChangeFont,
         fontSizeValue,
         handleChangeFontSize,
+        authorPosition,
+        handleAuthorPosition
       }}>
       {children}
     </ImgContext.Provider>

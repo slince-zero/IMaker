@@ -40,6 +40,7 @@ export default function RightBoard() {
     fontSizeValue,
     handleChangeFont,
     handleChangeFontSize,
+    handleAuthorPosition,
   } = useContext(ImgContext)
 
   const [hexColor, setHexColor] = useState('')
@@ -121,6 +122,47 @@ export default function RightBoard() {
   function handleProportionValue(e: React.ChangeEvent<HTMLSelectElement>) {
     setProportionValue(e.target.value)
   }
+
+  // 作者水印位置：左上、左下、中间、右下、右上
+  const authorPositionList = [
+    {
+      position: <BottomLeftIcon />,
+      value: {
+        bottom: '0',
+        padding: '0.75rem',
+      },
+    },
+    {
+      position: <BottomRightIcon />,
+      value: {
+        bottom: '0',
+        right: '0',
+        padding: '0.75rem',
+      },
+    },
+    {
+      position: <MiddleIcon />,
+      value: {
+        top: '60%',
+        left: '50%',
+      },
+    },
+    {
+      position: <TopLeftIcon />,
+      value: {
+        top: '0',
+        padding: '0.75rem',
+      },
+    },
+    {
+      position: <ToprightIcon />,
+      value: {
+        top: '0',
+        right: '0',
+        padding: '0.75rem',
+      },
+    },
+  ]
 
   // console.log(authorValue, '2222')
 
@@ -282,30 +324,6 @@ export default function RightBoard() {
           className='py-2'
         />
 
-        <Select
-          label='水印'
-          className='my-2'>
-          {animals.map((animal) => (
-            <SelectItem
-              key={animal}
-              value={animal}>
-              {animal}
-            </SelectItem>
-          ))}
-        </Select>
-
-        <Tabs
-          className='w-full my-2'
-          classNames={{
-            tabList: 'w-full',
-          }}
-          aria-label='Options'>
-          <Tab title={<BottomLeftIcon />} />
-          <Tab title={<BottomRightIcon />} />
-          <Tab title={<MiddleIcon />} />
-          <Tab title={<TopLeftIcon />} />
-          <Tab title={<ToprightIcon />} />
-        </Tabs>
         <Divider />
 
         <Input
@@ -316,6 +334,20 @@ export default function RightBoard() {
           onValueChange={setAuthorValue}
           className='py-2'
         />
+        <Tabs
+          className='w-full my-2'
+          classNames={{
+            tabList: 'w-full',
+          }}
+          onSelectionChange={handleAuthorPosition}
+          aria-label='Options'>
+          {authorPositionList.map((item, index) => (
+            <Tab
+              title={item.position}
+              key={item}
+            />
+          ))}
+        </Tabs>
       </div>
       {/* <Divider /> */}
       <div className='w-full mt-4 px-4 bg-[#181f27]'>
