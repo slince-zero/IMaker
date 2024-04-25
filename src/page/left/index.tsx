@@ -40,7 +40,7 @@ export default function LeftBoard() {
         <Navbar>
           <NavbarBrand>
             <ImgLogo />
-            <p className='font-bold text-inherit'>Img-Marker</p>
+            <p className='font-bold text-inherit'>IMker</p>
           </NavbarBrand>
 
           <NavbarContent justify='end'>
