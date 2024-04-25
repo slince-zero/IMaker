@@ -214,19 +214,31 @@ export default function RightBoard() {
         </div>
         <Divider />
 
-        <Select
-          label='字体'
-          onChange={handleChangeFont}
-          defaultSelectedKeys={[fontValue]}
-          className='my-2'>
-          {font_list.map((item) => (
-            <SelectItem
-              key={item.value}
-              value={item.value}>
-              {item.label}
-            </SelectItem>
-          ))}
-        </Select>
+        <div className='flex w-full items-center justify-between py-2'>
+          <Select
+            label='字体'
+            onChange={handleChangeFont}
+            defaultSelectedKeys={[fontValue]}
+            className='w-full my-2 mr-2'>
+            {font_list.map((item) => (
+              <SelectItem
+                key={item.value}
+                value={item.value}>
+                {item.label}
+              </SelectItem>
+            ))}
+          </Select>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button>大小</Button>
+            </DropdownTrigger>
+            <DropdownMenu>
+              <DropdownItem>1</DropdownItem>
+              <DropdownItem>1</DropdownItem>
+              <DropdownItem>1</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
 
         <Textarea
           label='标题&文案'
