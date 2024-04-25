@@ -28,6 +28,8 @@ export default function ImgContextProvider({
   const [isUpload, setIsUpload] = useState(false)
   // 作者标签值
   const [authorValue, setAuthorValue] = useState('@IMker')
+  // 标题&文案
+  const [titleValue, setTitleValue] = useState('花卡花落，你陪了我多少年')
 
   // 获取图片
   async function getImage(searchText: string = '') {
@@ -104,6 +106,8 @@ export default function ImgContextProvider({
         setIsUpload,
         authorValue,
         setAuthorValue,
+        titleValue,
+        setTitleValue,
       }}>
       {children}
     </ImgContext.Provider>

@@ -31,7 +31,8 @@ import {
 } from './posotion-logo'
 
 export default function RightBoard() {
-  const { authorValue, setAuthorValue } = useContext(ImgContext)
+  const { authorValue, setAuthorValue, titleValue, setTitleValue } =
+    useContext(ImgContext)
 
   const [hexColor, setHexColor] = useState('')
   const animals = ['cat', 'dog', '22', '22', '22', '22', '22', '22', '22', '22']
@@ -221,18 +222,20 @@ export default function RightBoard() {
         <Divider />
 
         <Textarea
-          label='标题'
-          placeholder='输入标题'
+          label='标题&文案'
+          placeholder='输入内容'
+          value={titleValue}
+          onValueChange={setTitleValue}
           className='py-2'
         />
 
         <Input
           label='作者'
           type='search'
-          className='py-2'
+          placeholder='输入作者'
           value={authorValue}
           onValueChange={setAuthorValue}
-          placeholder='输入作者'
+          className='py-2'
         />
       </div>
       {/* <Divider /> */}
