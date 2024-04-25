@@ -37,7 +37,9 @@ export default function RightBoard() {
     titleValue,
     setTitleValue,
     fontValue,
+    fontSizeValue,
     handleChangeFont,
+    handleChangeFontSize,
   } = useContext(ImgContext)
 
   const [hexColor, setHexColor] = useState('')
@@ -66,23 +68,47 @@ export default function RightBoard() {
     {
       label: 'Font-DingTalk',
       value: 'font-dingtalk',
-      description: 'The largest land animal',
     },
     {
       label: 'Font-Alibaba',
       value: 'font-alibaba',
-      description: 'The largest land animal',
     },
 
     {
       label: 'Font-KingSoft',
       value: 'font-kingsoft',
-      description: 'The largest land animal',
     },
     {
       label: 'Font-XinYiGuanHei',
       value: 'font-xinyiguanhei',
-      description: 'The largest land animal',
+    },
+  ]
+
+  // 字体大小
+  const font_size = [
+    {
+      label: '12',
+      value: '12px',
+    },
+    {
+      label: '16',
+      value: '16px',
+    },
+    {
+      label: '20',
+      value: '20px',
+    },
+    {
+      label: '24',
+      value: '24px',
+    },
+    {
+      label: '28',
+      value: '28px',
+    },
+    {
+      label: '32',
+      value: '32px',
     },
   ]
 
@@ -230,12 +256,20 @@ export default function RightBoard() {
           </Select>
           <Dropdown>
             <DropdownTrigger>
-              <Button>大小</Button>
+              <Button>{fontSizeValue === '' ? '大小' : fontSizeValue}</Button>
             </DropdownTrigger>
-            <DropdownMenu>
-              <DropdownItem>1</DropdownItem>
-              <DropdownItem>1</DropdownItem>
-              <DropdownItem>1</DropdownItem>
+            <DropdownMenu
+              aria-label='Select a fontSize'
+              disallowEmptySelection
+              selectionMode='single'
+              onAction={handleChangeFontSize}>
+              {font_size.map((item) => (
+                <DropdownItem
+                  value={item.value}
+                  key={item.value}>
+                  {item.label}
+                </DropdownItem>
+              ))}
             </DropdownMenu>
           </Dropdown>
         </div>

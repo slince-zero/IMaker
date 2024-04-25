@@ -34,6 +34,9 @@ export default function ImgContextProvider({
   // 字体
   const [fontValue, setFontValue] = useState('font-dingtalk')
 
+  // 字体大小
+  const [fontSizeValue, setFontSizeValue] = useState('')
+
   // 获取图片
   async function getImage(searchText: string = '') {
     try {
@@ -95,6 +98,11 @@ export default function ImgContextProvider({
     setFontValue(e.target.value)
   }
 
+  // 设置字体大小
+  function handleChangeFontSize(value: string) {
+    setFontSizeValue(value)
+  }
+
   return (
     <ImgContext.Provider
       value={{
@@ -118,7 +126,9 @@ export default function ImgContextProvider({
         setTitleValue,
         fontValue,
         setFontValue,
-        handleChangeFont
+        handleChangeFont,
+        fontSizeValue,
+        handleChangeFontSize,
       }}>
       {children}
     </ImgContext.Provider>

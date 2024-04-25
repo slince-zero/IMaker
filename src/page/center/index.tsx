@@ -9,6 +9,7 @@ export default function CenterBoard() {
     authorValue,
     titleValue,
     fontValue,
+    fontSizeValue,
   } = useContext(ImgContext)
   const [isLoading, setIsLoading] = useState(false)
   // console.log(uploadCurrentImage)
@@ -55,7 +56,7 @@ export default function CenterBoard() {
       {/* 标题&文案显示在图片上 */}
       <div
         className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pt-4'
-        style={{ fontFamily: fontValue }}>
+        style={{ fontFamily: fontValue, fontSize: fontSizeValue }}>
         {titleValue}
       </div>
 
