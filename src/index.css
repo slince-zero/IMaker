@@ -7,6 +7,22 @@
   --nextui-content1: 240 5.88% 10%;
   color: aliceblue;
 }
+@font-face {
+  font-family: "font-Alibaba";
+  src: url("/src/assets/fonts/AlibabaPuHuiTi-3-55-Regular.ttf");
+}
+@font-face {
+  font-family: "font-kingsoft";
+  src: url("/src/assets/fonts/Kingsoft_Cloud_Font.ttf");
+}
+@font-face {
+  font-family: "font-xinyiguanhei";
+  src: url("/src/assets/fonts/ZiTiQuanXinYiGuanHeiTi.ttf");
+}
+@font-face {
+  font-family: "font-dingtalk";
+  src: url("/src/assets/fonts/DingTalk_JinBuTi.ttf");
+}
 
 body {
   margin: 0;

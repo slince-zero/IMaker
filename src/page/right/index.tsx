@@ -31,8 +31,15 @@ import {
 } from './posotion-logo'
 
 export default function RightBoard() {
-  const { authorValue, setAuthorValue, titleValue, setTitleValue } =
-    useContext(ImgContext)
+  const {
+    authorValue,
+    setAuthorValue,
+    titleValue,
+    setTitleValue,
+    fontValue,
+    setFontValue,
+    handleChangeFont,
+  } = useContext(ImgContext)
 
   const [hexColor, setHexColor] = useState('')
   const animals = ['cat', 'dog', '22', '22', '22', '22', '22', '22', '22', '22']
@@ -53,6 +60,31 @@ export default function RightBoard() {
     { label: '2:3', value: 'aspect-[2/3]', description: '900x450' },
     { label: '3:4', value: 'aspect-[3/4]', description: '900x450' },
     { label: '9:16', value: 'aspect-[9/16]', description: '900x450' },
+  ]
+
+  // 字体合集
+  const font_list = [
+    {
+      label: 'Font-DingTalk',
+      value: 'font-dingtalk',
+      description: 'The largest land animal',
+    },
+    {
+      label: 'Font-Alibaba',
+      value: 'font-alibaba',
+      description: 'The largest land animal',
+    },
+
+    {
+      label: 'Font-KingSoft',
+      value: 'font-kingsoft',
+      description: 'The largest land animal',
+    },
+    {
+      label: 'Font-XinYiGuanHei',
+      value: 'font-xinyiguanhei',
+      description: 'The largest land animal',
+    },
   ]
 
   // 选择颜色
@@ -185,15 +217,25 @@ export default function RightBoard() {
 
         <Select
           label='字体'
+          onChange={handleChangeFont}
+          defaultSelectedKeys={[fontValue]}
           className='my-2'>
-          {animals.map((animal) => (
+          {font_list.map((item) => (
             <SelectItem
-              key={animal}
-              value={animal}>
-              {animal}
+              key={item.value}
+              value={item.value}>
+              {item.label}
             </SelectItem>
           ))}
         </Select>
+
+        <Textarea
+          label='标题&文案'
+          placeholder='输入内容'
+          value={titleValue}
+          onValueChange={setTitleValue}
+          className='py-2'
+        />
 
         <Select
           label='水印'
@@ -220,14 +262,6 @@ export default function RightBoard() {
           <Tab title={<ToprightIcon />} />
         </Tabs>
         <Divider />
-
-        <Textarea
-          label='标题&文案'
-          placeholder='输入内容'
-          value={titleValue}
-          onValueChange={setTitleValue}
-          className='py-2'
-        />
 
         <Input
           label='作者'

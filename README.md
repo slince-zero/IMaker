@@ -71,3 +71,17 @@ export default {
 - 第一种用`<label>`的方式是基于 HTML 标准的行为。标准的 HTML`<label>`元素可以关联到其它字段，当用户点击`<label>`时相当于点击了这些字段，甚至当这些字段不可见时也是这样。
 
 - 第二种是更灵活的 JavaScript 方法。它不依赖于 HTML 的默认行为，而是需要额外的 JavaScript 代码来实现。通常在 uploadClick 函数内部会有一个额外的步骤来手动调用`<input>`元素的点击事件（比如 inputRef.current.click()）。与第一种方法不同的是，这个`<Button>`和`<input>`之间的行为不是通过 HTML 结构来实现的，而是通过 JavaScript 来控制的。
+
+
+## 添加切换字体
+
+记录一下过程：
+
+1. 添加字体文件到 `src/assets/fonts` 目录下
+2. 在 `inedx.css` 中引入（我这里没有使用 tailwind 的导入）
+3. 定义 `fontValue` 的 state，和一个用于展示字体值的数组 `font_list`
+  context 中传递 `fontValue` 和 `setFontValue` 还有 `handleChangeFont` 用于切换字体的方法
+
+4. RightBoard 中接收 `handleChangeFont`，CenterBoard 中接收 `fontValue` 
+
+![图片](/src/assets/images/font.png)

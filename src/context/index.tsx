@@ -31,6 +31,9 @@ export default function ImgContextProvider({
   // 标题&文案
   const [titleValue, setTitleValue] = useState('花卡花落，你陪了我多少年')
 
+  // 字体
+  const [fontValue, setFontValue] = useState('font-dingtalk')
+
   // 获取图片
   async function getImage(searchText: string = '') {
     try {
@@ -87,6 +90,11 @@ export default function ImgContextProvider({
     }
   }
 
+  // 切换字体
+  function handleChangeFont(e: React.ChangeEvent<HTMLSelectElement>) {
+    setFontValue(e.target.value)
+  }
+
   return (
     <ImgContext.Provider
       value={{
@@ -108,6 +116,9 @@ export default function ImgContextProvider({
         setAuthorValue,
         titleValue,
         setTitleValue,
+        fontValue,
+        setFontValue,
+        handleChangeFont
       }}>
       {children}
     </ImgContext.Provider>
