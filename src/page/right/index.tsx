@@ -37,7 +37,6 @@ export default function RightBoard() {
     titleValue,
     setTitleValue,
     fontValue,
-    setFontValue,
     handleChangeFont,
   } = useContext(ImgContext)
 

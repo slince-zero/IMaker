@@ -29,7 +29,7 @@ export default function ImgContextProvider({
   // 作者标签值
   const [authorValue, setAuthorValue] = useState('@IMker')
   // 标题&文案
-  const [titleValue, setTitleValue] = useState('花卡花落，你陪了我多少年')
+  const [titleValue, setTitleValue] = useState('花开花落，你陪了我多少年')
 
   // 字体
   const [fontValue, setFontValue] = useState('font-dingtalk')
