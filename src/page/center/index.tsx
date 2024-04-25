@@ -20,6 +20,7 @@ export default function CenterBoard() {
       setIsLoading(true)
     }
   }, [imgInfo])
+  console.log(authorPosition, '222')
 
   return (
     <div className='relative'>
@@ -63,13 +64,19 @@ export default function CenterBoard() {
 
       {/* autor 显示在图片上 */}
       <div
-        className={
-          authorPosition === 'default'
-            ? 'absolute bottom-0 right-0 p-2'
-            : authorPosition
-        }>
+        style={{
+          position: authorPosition?.position,
+          bottom: authorPosition?.bottom,
+          top: authorPosition?.top,
+          left: authorPosition?.left,
+          right: authorPosition?.right,
+          padding: authorPosition?.padding,
+        }}>
         {authorValue}
       </div>
+      {/* <div className='absolute bottom-0 right-0 p-3'>
+        {authorValue}
+      </div> */}
     </div>
   )
 }

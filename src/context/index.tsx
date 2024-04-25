@@ -7,6 +7,14 @@ import {
 } from 'react'
 import ImageItem from '@/page/left/ImageItem'
 
+import {
+  BottomLeftIcon,
+  BottomRightIcon,
+  MiddleIcon,
+  TopLeftIcon,
+  ToprightIcon,
+} from '@/page/right/posotion-logo'
+
 export const ImgContext = createContext({
   imgList: [],
   setImgList: () => {},
@@ -30,7 +38,7 @@ export default function ImgContextProvider({
   const [authorValue, setAuthorValue] = useState('@IMker')
 
   // 作者水印位置
-  const [authorPosition, setAuthorPosition] = useState('default')
+  const [authorPosition, setAuthorPosition] = useState<any>('')
   // 标题&文案
   const [titleValue, setTitleValue] = useState('花开花落，你陪了我多少年')
 
@@ -106,10 +114,65 @@ export default function ImgContextProvider({
     setFontSizeValue(value)
   }
 
+  // 作者水印位置：左上、左下、中间、右下、右上
+  const authorPositionList = [
+    {
+      id: 'bottom-left',
+      position: <BottomLeftIcon />,
+      value: {
+        bottom: '0',
+        padding: '0.75rem',
+        position: 'absolute',
+      },
+    },
+    {
+      id: 'bottom-right',
+      position: <BottomRightIcon />,
+      value: {
+        bottom: '0',
+        right: '0',
+        padding: '0.75rem',
+        position: 'absolute',
+      },
+    },
+    {
+      id: 'middle',
+      position: <MiddleIcon />,
+      value: {
+        top: '60%',
+        left: '50%',
+        position: 'absolute',
+      },
+    },
+    {
+      id: 'top-left',
+      position: <TopLeftIcon />,
+      value: {
+        top: '0',
+        padding: '0.75rem',
+        position: 'absolute',
+      },
+    },
+    {
+      id: 'top-right',
+      position: <ToprightIcon />,
+      value: {
+        top: '0',
+        right: '0',
+        padding: '0.75rem',
+        position: 'absolute',
+      },
+    },
+  ]
+
   // 设置作者水印位置
-  function handleAuthorPosition(e) {
-    console.log(e);
-    
+  function handleAuthorPosition(e: any) {
+    // console.log(e);
+    const matchItem = authorPositionList.find((item) => item.id === e)
+
+    if (matchItem) {
+      setAuthorPosition(matchItem.value)
+    }
     // setAuthorPosition(value)
   }
 
@@ -140,7 +203,8 @@ export default function ImgContextProvider({
         fontSizeValue,
         handleChangeFontSize,
         authorPosition,
-        handleAuthorPosition
+        authorPositionList,
+        handleAuthorPosition,
       }}>
       {children}
     </ImgContext.Provider>

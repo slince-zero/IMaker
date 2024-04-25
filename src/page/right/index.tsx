@@ -22,13 +22,7 @@ import {
 import { useState, useContext } from 'react'
 import { ImgContext } from '@/context'
 import { CirclePicker } from 'react-color'
-import {
-  BottomLeftIcon,
-  BottomRightIcon,
-  MiddleIcon,
-  TopLeftIcon,
-  ToprightIcon,
-} from './posotion-logo'
+
 
 export default function RightBoard() {
   const {
@@ -41,6 +35,7 @@ export default function RightBoard() {
     handleChangeFont,
     handleChangeFontSize,
     handleAuthorPosition,
+    authorPositionList
   } = useContext(ImgContext)
 
   const [hexColor, setHexColor] = useState('')
@@ -123,46 +118,7 @@ export default function RightBoard() {
     setProportionValue(e.target.value)
   }
 
-  // 作者水印位置：左上、左下、中间、右下、右上
-  const authorPositionList = [
-    {
-      position: <BottomLeftIcon />,
-      value: {
-        bottom: '0',
-        padding: '0.75rem',
-      },
-    },
-    {
-      position: <BottomRightIcon />,
-      value: {
-        bottom: '0',
-        right: '0',
-        padding: '0.75rem',
-      },
-    },
-    {
-      position: <MiddleIcon />,
-      value: {
-        top: '60%',
-        left: '50%',
-      },
-    },
-    {
-      position: <TopLeftIcon />,
-      value: {
-        top: '0',
-        padding: '0.75rem',
-      },
-    },
-    {
-      position: <ToprightIcon />,
-      value: {
-        top: '0',
-        right: '0',
-        padding: '0.75rem',
-      },
-    },
-  ]
+  
 
   // console.log(authorValue, '2222')
 
@@ -341,10 +297,10 @@ export default function RightBoard() {
           }}
           onSelectionChange={handleAuthorPosition}
           aria-label='Options'>
-          {authorPositionList.map((item, index) => (
+          {authorPositionList.map((item:any) => (
             <Tab
               title={item.position}
-              key={item}
+              key={item.id}
             />
           ))}
         </Tabs>
