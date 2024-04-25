@@ -32,6 +32,7 @@ import {
 export default function RightBoard() {
   const [hexColor, setHexColor] = useState('')
   const animals = ['cat', 'dog', '22', '22', '22', '22', '22', '22', '22', '22']
+  const [proportionValue, setProportionValue] = useState('aspect-[16/9]')
 
   const img_aspect_x_list = [
     // 横屏
@@ -50,9 +51,17 @@ export default function RightBoard() {
     { label: '9:16', value: 'aspect-[9/16]', description: '900x450' },
   ]
 
+  // 选择颜色
   function handleChangeCompleteColor(color: any) {
     setHexColor(color.hex.toUpperCase())
   }
+
+  // 选择图片比例
+  function handleProportionValue(e: React.ChangeEvent<HTMLSelectElement>) {
+    setProportionValue(e.target.value)
+  }
+
+  console.log(proportionValue, '2222')
 
   return (
     <div className='flex flex-col bg-slate-500 h-screen'>
@@ -82,9 +91,11 @@ export default function RightBoard() {
       </>
 
       <div className='flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap p-2'>
-        {/* --nextui-content1: 240 5.88% 10%; */}
+        {/* 比例，控制图片大小 */}
         <Select
           label='比例'
+          defaultSelectedKeys={[proportionValue]}
+          onChange={handleProportionValue}
           className='max-w-xs py-2'>
           <SelectSection
             showDivider
