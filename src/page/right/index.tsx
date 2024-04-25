@@ -23,7 +23,6 @@ import { useState, useContext } from 'react'
 import { ImgContext } from '@/context'
 import { CirclePicker } from 'react-color'
 
-
 export default function RightBoard() {
   const {
     authorValue,
@@ -35,11 +34,10 @@ export default function RightBoard() {
     handleChangeFont,
     handleChangeFontSize,
     handleAuthorPosition,
-    authorPositionList
+    authorPositionList,
   } = useContext(ImgContext)
 
   const [hexColor, setHexColor] = useState('')
-  const animals = ['cat', 'dog', '22', '22', '22', '22', '22', '22', '22', '22']
   const [proportionValue, setProportionValue] = useState('aspect-[16/9]')
 
   const img_aspect_x_list = [
@@ -118,9 +116,10 @@ export default function RightBoard() {
     setProportionValue(e.target.value)
   }
 
-  
-
-  // console.log(authorValue, '2222')
+  // 下载图片
+  function handleDownloadImage(type:string) {
+    console.log(type)
+  }
 
   return (
     <div className='flex flex-col bg-slate-500 h-screen'>
@@ -297,7 +296,7 @@ export default function RightBoard() {
           }}
           onSelectionChange={handleAuthorPosition}
           aria-label='Options'>
-          {authorPositionList.map((item:any) => (
+          {authorPositionList.map((item: any) => (
             <Tab
               title={item.position}
               key={item.id}
@@ -305,13 +304,25 @@ export default function RightBoard() {
           ))}
         </Tabs>
       </div>
-      {/* <Divider /> */}
+
       <div className='w-full mt-4 px-4 bg-[#181f27]'>
         <div className='text-gray-100 text-sm py-2'>下载图像</div>
         <div className='flex justify-between my-3'>
-          <Button variant='flat'>JPG</Button>
-          <Button variant='flat'>PNG</Button>
-          <Button variant='flat'>SVG</Button>
+          <Button
+            variant='flat'
+            onClick={() => handleDownloadImage('JPG')}>
+            JPG
+          </Button>
+          <Button
+            variant='flat'
+            onClick={() => handleDownloadImage('PNG')}>
+            PNG
+          </Button>
+          <Button
+            variant='flat'
+            onClick={() => handleDownloadImage('SVG')}>
+            SVG
+          </Button>
         </div>
       </div>
     </div>
