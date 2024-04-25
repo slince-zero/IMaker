@@ -2,7 +2,8 @@ import { useContext, useState, useEffect } from 'react'
 import { ImgContext } from '@/context'
 import { Spinner } from '@nextui-org/react'
 export default function CenterBoard() {
-  const { imgInfo, uploadCurrentImage, isUpload } = useContext(ImgContext)
+  const { imgInfo, uploadCurrentImage, isUpload, authorValue } =
+    useContext(ImgContext)
   const [isLoading, setIsLoading] = useState(false)
   // console.log(uploadCurrentImage)
 
@@ -45,6 +46,9 @@ export default function CenterBoard() {
           className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pt-4'
         />
       )}
+
+      {/* autor 显示在图片上 */}
+      <div className='absolute bottom-0 right-0 p-3 text-white'>{authorValue}</div>
     </div>
   )
 }

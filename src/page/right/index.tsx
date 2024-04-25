@@ -19,7 +19,8 @@ import {
   Divider,
   SelectSection,
 } from '@nextui-org/react'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { ImgContext } from '@/context'
 import { CirclePicker } from 'react-color'
 import {
   BottomLeftIcon,
@@ -30,6 +31,8 @@ import {
 } from './posotion-logo'
 
 export default function RightBoard() {
+  const { authorValue, setAuthorValue } = useContext(ImgContext)
+
   const [hexColor, setHexColor] = useState('')
   const animals = ['cat', 'dog', '22', '22', '22', '22', '22', '22', '22', '22']
   const [proportionValue, setProportionValue] = useState('aspect-[16/9]')
@@ -61,7 +64,7 @@ export default function RightBoard() {
     setProportionValue(e.target.value)
   }
 
-  console.log(proportionValue, '2222')
+  // console.log(authorValue, '2222')
 
   return (
     <div className='flex flex-col bg-slate-500 h-screen'>
@@ -227,6 +230,8 @@ export default function RightBoard() {
           label='作者'
           type='search'
           className='py-2'
+          value={authorValue}
+          onValueChange={setAuthorValue}
           placeholder='输入作者'
         />
       </div>

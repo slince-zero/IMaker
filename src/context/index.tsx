@@ -26,6 +26,8 @@ export default function ImgContextProvider({
   const [uploadCurrentImage, setUploadCurrentImage] = useState<any>(null)
   // 用于判断是否是上传图片，还是默认通过API获取的图片
   const [isUpload, setIsUpload] = useState(false)
+  // 作者标签值
+  const [authorValue, setAuthorValue] = useState('@IMker')
 
   // 获取图片
   async function getImage(searchText: string = '') {
@@ -100,6 +102,8 @@ export default function ImgContextProvider({
         uploadCurrentImage,
         isUpload,
         setIsUpload,
+        authorValue,
+        setAuthorValue,
       }}>
       {children}
     </ImgContext.Provider>
