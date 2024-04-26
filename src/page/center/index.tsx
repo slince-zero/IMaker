@@ -14,6 +14,7 @@ export default function CenterBoard() {
     authorPosition,
     hexColor,
     opacityValue,
+    proportionValue,
   } = useContext(ImgContext)
 
   const { imageContainerRef } = useContext(ImageDownloadContext)
@@ -32,26 +33,30 @@ export default function CenterBoard() {
       className='relative'
       ref={imageContainerRef}>
       {isUpload === true ? (
-        <>
+        <div
+          style={{ maxHeight: '90vh' }}
+          className={proportionValue == '' ? 'aspect-[16/9]' : proportionValue}>
           {uploadCurrentImage?.urls?.regular && (
             <img
               src={uploadCurrentImage?.urls?.regular}
               onLoad={() => setIsLoading(false)}
-              className='rounded-3xl h-[800px] w-[1000px] object-cover'
+              className='rounded-md object-cover h-full w-full'
             />
           )}
-        </>
+        </div>
       ) : (
-        <>
+        <div
+          style={{ maxHeight: '90vh' }}
+          className={proportionValue == '' ? 'aspect-[16/9]' : proportionValue}>
           {imgInfo?.urls?.regular && (
             <img
               src={imgInfo?.urls?.regular}
               alt={imgInfo?.alt_description}
               onLoad={() => setIsLoading(false)}
-              className='rounded-3xl h-[800px] w-[1000px] object-cover'
+              className='rounded-md object-cover h-full w-full'
             />
           )}
-        </>
+        </div>
       )}
 
       <div

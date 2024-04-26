@@ -34,6 +34,10 @@ export default function ImgContextProvider({
   const [uploadCurrentImage, setUploadCurrentImage] = useState<any>(null)
   // 用于判断是否是上传图片，还是默认通过API获取的图片
   const [isUpload, setIsUpload] = useState(false)
+
+  // 图片比例
+  const [proportionValue, setProportionValue] = useState('aspect-[16/9]')
+
   // 作者标签值
   const [authorValue, setAuthorValue] = useState('@IMker')
 
@@ -108,6 +112,13 @@ export default function ImgContextProvider({
     } catch (e) {
       console.error(e)
     }
+  }
+
+  // 选择图片比例
+  function handleProportionValue(e: React.ChangeEvent<HTMLSelectElement>) {
+    console.log(e.target.value)
+
+    setProportionValue(e.target.value)
   }
 
   // 切换字体
@@ -220,6 +231,8 @@ export default function ImgContextProvider({
         hexColor,
         opacityValue,
         setOpacityValue,
+        proportionValue,
+        handleProportionValue,
       }}>
       {children}
     </ImgContext.Provider>

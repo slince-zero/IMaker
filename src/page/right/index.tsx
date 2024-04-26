@@ -40,10 +40,10 @@ export default function RightBoard() {
     hexColor,
     opacityValue,
     setOpacityValue,
+    proportionValue,
+    handleProportionValue,
   } = useContext(ImgContext)
   const { handleDownloadImage } = useContext(ImageDownloadContext)
-
-  const [proportionValue, setProportionValue] = useState('aspect-[16/9]')
 
   // button 样式
   const buttonStyle = {
@@ -55,11 +55,13 @@ export default function RightBoard() {
 
   const img_aspect_x_list = [
     // 横屏
-    { label: '1 : 1', value: 'aspect-square', description: '900x450' },
+    { label: '1 : 1', value: 'aspect-square', description: '900x900' },
     { label: '2 : 1', value: 'aspect-[2/1]', description: '900x450' },
-    { label: '3 : 2', value: 'aspect-[3/2]', description: '900x450' },
-    { label: '4 : 3', value: 'aspect-[4/3]', description: '900x450' },
-    { label: '16: 9', value: 'aspect-[16/9]', description: '900x450' },
+    { label: '3 : 2', value: 'aspect-[3/2]', description: '900x600' },
+    { label: '4 : 3', value: 'aspect-[4/3]', description: '900x675' },
+    { label: '16: 9', value: 'aspect-[16/9]', description: '1600x900' },
+    { label: '微信公众号', value: 'aspect-[900/383]', description: '900x383' },
+    // 900*383
   ]
 
   const img_aspect_y_list = [
@@ -118,11 +120,6 @@ export default function RightBoard() {
       value: '32px',
     },
   ]
-
-  // 选择图片比例
-  function handleProportionValue(e: React.ChangeEvent<HTMLSelectElement>) {
-    setProportionValue(e.target.value)
-  }
 
   // 下载图片
 
@@ -238,7 +235,7 @@ export default function RightBoard() {
           <Slider
             color='foreground'
             label='透明度'
-            step={0.01} 
+            step={0.01}
             maxValue={1}
             minValue={0}
             defaultValue={opacityValue}
