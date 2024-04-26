@@ -40,7 +40,7 @@ export default function CenterBoard() {
             <img
               src={uploadCurrentImage?.urls?.regular}
               onLoad={() => setIsLoading(false)}
-              className='rounded-md object-cover h-full w-full'
+              className='rounded-3xl object-cover h-full w-full'
             />
           )}
         </div>
@@ -53,7 +53,7 @@ export default function CenterBoard() {
               src={imgInfo?.urls?.regular}
               alt={imgInfo?.alt_description}
               onLoad={() => setIsLoading(false)}
-              className='rounded-md object-cover h-full w-full'
+              className='rounded-3xl object-cover h-full w-full'
             />
           )}
         </div>

@@ -61,7 +61,6 @@ export default function RightBoard() {
     { label: '4 : 3', value: 'aspect-[4/3]', description: '900x675' },
     { label: '16: 9', value: 'aspect-[16/9]', description: '1600x900' },
     { label: '微信公众号', value: 'aspect-[900/383]', description: '900x383' },
-    // 900*383
   ]
 
   const img_aspect_y_list = [
