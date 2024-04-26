@@ -19,7 +19,7 @@ import {
   Divider,
   SelectSection,
 } from '@nextui-org/react'
-import { useState, useContext, useRef } from 'react'
+import { useState, useContext } from 'react'
 import { ImgContext } from '@/context'
 import { CirclePicker } from 'react-color'
 import { ImageDownloadContext } from '@/context/imageDownload'
