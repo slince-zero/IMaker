@@ -8,7 +8,7 @@ import {
   Input,
   ScrollShadow,
 } from '@nextui-org/react'
-import { ImgLogo, UploadLogo } from './logo'
+import { UploadLogo } from './logo'
 import { ImgContext } from '@/context'
 import { Key, useContext } from 'react'
 
@@ -40,7 +40,10 @@ export default function LeftBoard() {
         <Navbar>
           <NavbarBrand>
             {/* <ImgLogo /> */}
-            <img src="public/favicon.png" alt="" />
+            <img
+              src='public/favicon.png'
+              alt=''
+            />
             <p className='font-bold text-inherit'>IMker</p>
           </NavbarBrand>
 
