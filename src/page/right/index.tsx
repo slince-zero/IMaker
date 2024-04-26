@@ -39,8 +39,16 @@ export default function RightBoard() {
   } = useContext(ImgContext)
   const { handleDownloadImage } = useContext(ImageDownloadContext)
 
-  const [hexColor, setHexColor] = useState('')
+  const [hexColor, setHexColor] = useState('#3F51B5')
   const [proportionValue, setProportionValue] = useState('aspect-[16/9]')
+
+  // button 样式
+  const buttonStyle = {
+    fontSize: '20px',
+    backgroundColor: hexColor,
+    borderWidth: '2px',
+    borderColor: '#586980',
+  }
 
   const img_aspect_x_list = [
     // 横屏
@@ -183,15 +191,20 @@ export default function RightBoard() {
         <div className='w-full flex flex-col py-2'>
           <div className='flex w-full items-center justify-between '>
             <div className='w-4/5'>
-              <Input label='遮罩' />
+              <Input
+                type='url'
+                label='遮罩'
+                value={hexColor}
+              />
             </div>
 
             <div className='mx-2'>
               <Dropdown>
                 <DropdownTrigger>
                   <Button
-                    isIconOnly
                     size='lg'
+                    isIconOnly
+                    style={buttonStyle}
                     variant='bordered'></Button>
                 </DropdownTrigger>
                 <DropdownMenu
