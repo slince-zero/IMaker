@@ -15,7 +15,6 @@ import {
   ToprightIcon,
 } from '@/page/right/posotion-logo'
 
-
 export const ImgContext = createContext({
   imgList: [],
   setImgList: () => {},
@@ -48,6 +47,12 @@ export default function ImgContextProvider({
 
   // 字体大小
   const [fontSizeValue, setFontSizeValue] = useState('')
+
+  // 设置遮罩层颜色
+  const [hexColor, setHexColor] = useState('#3F51B5')
+
+  // 设置遮罩颜色透明度
+  const [opacityValue, setOpacityValue] = useState(0.1)
 
   // 获取图片
   async function getImage(searchText: string = '') {
@@ -177,6 +182,11 @@ export default function ImgContextProvider({
     // setAuthorPosition(value)
   }
 
+  // 选择遮罩颜色
+  function handleChangeCompleteColor(color: any) {
+    setHexColor(color.hex.toUpperCase())
+  }
+
   return (
     <ImgContext.Provider
       value={{
@@ -206,6 +216,10 @@ export default function ImgContextProvider({
         authorPosition,
         authorPositionList,
         handleAuthorPosition,
+        handleChangeCompleteColor,
+        hexColor,
+        opacityValue,
+        setOpacityValue,
       }}>
       {children}
     </ImgContext.Provider>

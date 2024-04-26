@@ -36,10 +36,13 @@ export default function RightBoard() {
     handleChangeFontSize,
     handleAuthorPosition,
     authorPositionList,
+    handleChangeCompleteColor,
+    hexColor,
+    opacityValue,
+    setOpacityValue,
   } = useContext(ImgContext)
   const { handleDownloadImage } = useContext(ImageDownloadContext)
 
-  const [hexColor, setHexColor] = useState('#3F51B5')
   const [proportionValue, setProportionValue] = useState('aspect-[16/9]')
 
   // button 样式
@@ -115,11 +118,6 @@ export default function RightBoard() {
       value: '32px',
     },
   ]
-
-  // 选择颜色
-  function handleChangeCompleteColor(color: any) {
-    setHexColor(color.hex.toUpperCase())
-  }
 
   // 选择图片比例
   function handleProportionValue(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -240,10 +238,11 @@ export default function RightBoard() {
           <Slider
             color='foreground'
             label='透明度'
-            step={1}
-            maxValue={100}
+            step={0.01} 
+            maxValue={1}
             minValue={0}
-            defaultValue={40}
+            defaultValue={opacityValue}
+            onChange={setOpacityValue}
             className='max-w-md mt-5'
           />
         </div>

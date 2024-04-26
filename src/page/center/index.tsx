@@ -12,6 +12,8 @@ export default function CenterBoard() {
     fontValue,
     fontSizeValue,
     authorPosition,
+    hexColor,
+    opacityValue,
   } = useContext(ImgContext)
 
   const { imageContainerRef } = useContext(ImageDownloadContext)
@@ -27,15 +29,15 @@ export default function CenterBoard() {
 
   return (
     <div
-      ref={imageContainerRef}
-      className='relative'>
+      className='relative'
+      ref={imageContainerRef}>
       {isUpload === true ? (
         <>
           {uploadCurrentImage?.urls?.regular && (
             <img
               src={uploadCurrentImage?.urls?.regular}
               onLoad={() => setIsLoading(false)}
-              className='rounded-3xl h-[600px] w-[800px] object-cover'
+              className='rounded-3xl h-[800px] w-[1000px] object-cover'
             />
           )}
         </>
@@ -46,11 +48,23 @@ export default function CenterBoard() {
               src={imgInfo?.urls?.regular}
               alt={imgInfo?.alt_description}
               onLoad={() => setIsLoading(false)}
-              className='rounded-3xl h-[600px] w-[800px] object-cover'
+              className='rounded-3xl h-[800px] w-[1000px] object-cover'
             />
           )}
         </>
       )}
+
+      <div
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          top: '0',
+          left: '0',
+          borderRadius: '1.5rem',
+          backgroundColor: hexColor,
+          opacity: opacityValue,
+        }}></div>
 
       {/*object-cover 是object-fit: cover; 用来确保图片在适应各种尺寸的屏幕和设备时都能保持其原始的纵横比，同时避免空白区域或图像失真。 */}
       {isLoading && (
