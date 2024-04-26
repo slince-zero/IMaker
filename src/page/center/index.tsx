@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from 'react'
 import { ImgContext } from '@/context'
+import { ImageDownloadContext } from '@/context/imageDownload'
 import { Spinner } from '@nextui-org/react'
 export default function CenterBoard() {
   const {
@@ -12,6 +13,9 @@ export default function CenterBoard() {
     fontSizeValue,
     authorPosition,
   } = useContext(ImgContext)
+
+  const { imageContainerRef } = useContext(ImageDownloadContext)
+
   const [isLoading, setIsLoading] = useState(false)
   // console.log(uploadCurrentImage)
 
@@ -20,10 +24,11 @@ export default function CenterBoard() {
       setIsLoading(true)
     }
   }, [imgInfo])
-  console.log(authorPosition, '222')
 
   return (
-    <div className='relative'>
+    <div
+      ref={imageContainerRef}
+      className='relative'>
       {isUpload === true ? (
         <>
           {uploadCurrentImage?.urls?.regular && (

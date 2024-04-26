@@ -12,12 +12,14 @@
   "dependencies": {
     "@nextui-org/button": "^2.0.30",
     "@nextui-org/react": "^2.3.5",
+    "dom-to-image": "^2.6.0",
     "framer-motion": "^11.1.7",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/dom-to-image": "^2.6.7",
     "@types/react": "^18.2.66",
     "@types/react-color": "^3.0.12",
     "@types/react-dom": "^18.2.22",

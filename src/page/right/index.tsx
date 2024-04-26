@@ -19,9 +19,10 @@ import {
   Divider,
   SelectSection,
 } from '@nextui-org/react'
-import { useState, useContext } from 'react'
+import { useState, useContext, useRef } from 'react'
 import { ImgContext } from '@/context'
 import { CirclePicker } from 'react-color'
+import { ImageDownloadContext } from '@/context/imageDownload'
 
 export default function RightBoard() {
   const {
@@ -36,6 +37,7 @@ export default function RightBoard() {
     handleAuthorPosition,
     authorPositionList,
   } = useContext(ImgContext)
+  const { handleDownloadImage } = useContext(ImageDownloadContext)
 
   const [hexColor, setHexColor] = useState('')
   const [proportionValue, setProportionValue] = useState('aspect-[16/9]')
@@ -117,9 +119,6 @@ export default function RightBoard() {
   }
 
   // 下载图片
-  function handleDownloadImage(type:string) {
-    console.log(type)
-  }
 
   return (
     <div className='flex flex-col bg-slate-500 h-screen'>
