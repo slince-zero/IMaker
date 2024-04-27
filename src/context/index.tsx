@@ -62,7 +62,7 @@ export default function ImgContextProvider({
   async function getImage(searchText: string = '') {
     try {
       setIsLoading(true)
-      const accessKey = 'cPSLU8ro2LKkaLQ71-RKKFFwb2g-_DIx9NCf27YnCHs'
+      const accessKey = import.meta.env.VITE_PUBLIC_UNSPLASH_API_KEY
       const endpoint =
         searchText.length > 0
           ? `https://api.unsplash.com/search/photos`

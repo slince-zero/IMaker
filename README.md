@@ -3,12 +3,42 @@
 </p>
 <h1 align="center"> IMaker </h1>
 
-## useContext 很灵活
+
+
+## 介绍
+
+Imkaer 是一款用来设计封面的工具，比如你可以为你的博客、视频、公众号等设计你自己喜欢的封面。
+
+## 预览
+
+![intro](/public/intro.png)
+
+
+## 部署
+
+👉第一步：更改 `.env.local` 中的 `VITE_PUBLIC_UNSPLASH_API_KEY`
+
+    VITE_PUBLIC_UNSPLASH_API_KEY = your_unsplash_api_key
+
+[https://unsplash.com/documentation](https://unsplash.com/documentation)
+
+👉第二步：克隆项目
+
+    git clone git@github.com:slince-zero/img-maker.git
+    cd img-maker
+    npm i 
+    npm run dev
+  
+打开 http://localhost:5173 查看效果
+
+
+## 遇到的一些问题
+### useContext 很灵活
 
 通过 createContext 创建一个 contextProvider 就可以在任意组件里面传递数据，而且很灵活，可以直接在跟组件里面用 contextProvider 来包裹根组件。
 也可以用它包裹任意你想传递数据的组件当中。
 
-## 上传文件功能中的一些问题
+### 上传文件功能中的一些问题
 
 ```tsx
 <label>
@@ -47,7 +77,7 @@
 
 - 第二种是更灵活的 JavaScript 方法。它不依赖于 HTML 的默认行为，而是需要额外的 JavaScript 代码来实现。通常在 uploadClick 函数内部会有一个额外的步骤来手动调用`<input>`元素的点击事件（比如 inputRef.current.click()）。与第一种方法不同的是，这个`<Button>`和`<input>`之间的行为不是通过 HTML 结构来实现的，而是通过 JavaScript 来控制的。
 
-## 添加切换字体
+### 添加切换字体
 
 记录一下过程：
 
@@ -60,7 +90,7 @@
 
 ![图片](/src/assets/images/font.png)
 
-## 下载功能
+### 下载功能
 
 1. 定义了一个新的 `ImageDownloadContext`, 并且在其中提供了一个 `imageContainerRef` 和 `handleDownloadImage`
 2. 在 `RightBoard` 中接收 `handleDownloadImage`，在 `CenterBoard` 中接收 `imageContainerRef`

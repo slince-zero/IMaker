@@ -40,7 +40,7 @@ export default function LeftBoard() {
         <Navbar>
           <NavbarBrand>
             <img
-              src='/public/favicon-left.png'
+              src='/favicon-left.png'
               alt=''
             />
             <p className='font-bold text-inherit'>IMker</p>
@@ -50,7 +50,7 @@ export default function LeftBoard() {
             <NavbarItem>
               <Avatar
                 isBordered
-                src='https://avatars.githubusercontent.com/u/40690276?v=4'
+                src='/user.png'
               />
             </NavbarItem>
           </NavbarContent>
