@@ -14,7 +14,7 @@ Imkaer is a tool designed for creating covers, allowing you to design your own f
 
 ## Deployment
 
-👉Step 1: Change the VITE_PUBLIC_UNSPLASH_API_KEY in .env.local
+👉Step 1: Create a file named ".env.local" and change the VITE_PUBLIC_UNSPLASH_API_KEY in .env.local
 
     VITE_PUBLIC_UNSPLASH_API_KEY = your_unsplash_api_key
 

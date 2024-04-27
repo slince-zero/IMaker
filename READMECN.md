@@ -16,7 +16,7 @@ Imkaer 是一款用来设计封面的工具，比如你可以为你的博客、�
 
 ## 部署
 
-👉第一步：更改 `.env.local` 中的 `VITE_PUBLIC_UNSPLASH_API_KEY`
+👉第一步：创建一个`.env.local`文件，更改 `.env.local` 中的 `VITE_PUBLIC_UNSPLASH_API_KEY`
 
     VITE_PUBLIC_UNSPLASH_API_KEY = your_unsplash_api_key
 
