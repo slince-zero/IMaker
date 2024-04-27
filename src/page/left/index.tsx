@@ -39,9 +39,8 @@ export default function LeftBoard() {
       <>
         <Navbar>
           <NavbarBrand>
-            {/* <ImgLogo /> */}
             <img
-              src='public/favicon.png'
+              src='/public/favicon-left.png'
               alt=''
             />
             <p className='font-bold text-inherit'>IMker</p>
