@@ -24,7 +24,7 @@ Imkaer 是一款用来设计封面的工具，比如你可以为你的博客、�
 
 👉第二步：克隆项目
 
-    git clone git@github.com:slince-zero/img-maker.git
+    git clone git@github.com:slince-zero/IMaker.git
     cd img-maker
     npm i 
     npm run dev
