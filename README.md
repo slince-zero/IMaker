@@ -31,6 +31,13 @@ Imkaer 是一款用来设计封面的工具，比如你可以为你的博客、�
   
 打开 http://localhost:5173 查看效果
 
+## 感谢以下开源项目
+https://github.com/gezhaoyou/picprose
+
+
+## 协议
+GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
+
 
 ## 遇到的一些问题
 ### useContext 很灵活
