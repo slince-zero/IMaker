@@ -2,7 +2,7 @@
   <img src="/public/favicon.png" alt="favicon">
 </p>
 <h1 align="center"> IMaker </h1>
-<a link="/READMECN.md">中文</a>
+<a href="/READMECN.md">中文</a>
 
 ## Intro
 
