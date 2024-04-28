@@ -16,6 +16,7 @@ export default function CenterBoard() {
     hexColor,
     opacityValue,
     proportionValue,
+    boardTool,
   } = useContext(ImgContext)
 
   const { imageContainerRef } = useContext(ImageDownloadContext)
@@ -29,9 +30,22 @@ export default function CenterBoard() {
     }
   }, [imgInfo])
 
+  // 设置鼠标样式-存在一些问题，不能正确显示
+  useEffect(() => {
+    const centerBoardElement = document.getElementsByClassName(
+      'img-area'
+    )[0] as HTMLElement
+    if (boardTool === 'pen') {
+      centerBoardElement.style.cursor = 'url(/assets/images/pen.svg),auto'
+    } else if (boardTool === 'rubber') {
+      centerBoardElement.style.cursor =
+        'url(/assets/images/rubber.svg),auto'
+    }
+  }, [boardTool])
+
   return (
     <div
-      className='relative'
+      className='relative img-area'
       ref={imageContainerRef}>
       {isUpload === true ? (
         <div
