@@ -101,3 +101,18 @@ GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
 
 1. 定义了一个新的 `ImageDownloadContext`, 并且在其中提供了一个 `imageContainerRef` 和 `handleDownloadImage`
 2. 在 `RightBoard` 中接收 `handleDownloadImage`，在 `CenterBoard` 中接收 `imageContainerRef`
+
+
+### 组件间传递数据，数据类型丢失
+
+`react-konva` 这个库中的 `Line` 组件要求传递的 `strokeWidth，必须为` number 类型
+
+我在 context 中定义了 `penSize`，但是接收过来就成了 `any` 类型，查了一些文档之后，发现组件在传递数据的过程中，会因为多种原因导致数据类型丢失，所以这里就只能显示的定义一个数据类型了
+
+```ts
+interface ContextProp {
+  boardTool: string
+  penSize: number
+}
+const { boardTool, penSize } = useContext<ContextProp>(ImgContext)
+```
