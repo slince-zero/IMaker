@@ -116,3 +116,31 @@ interface ContextProp {
 }
 const { boardTool, penSize } = useContext<ContextProp>(ImgContext)
 ```
+
+
+### 关于撤销功能
+
+```ts
+// 监听键盘事件
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 判断一下电脑系统
+      const userAgent = navigator.userAgent.toLowerCase()
+
+      if (userAgent.indexOf('windows') > -1) {
+        // Windows系统
+        if (e.ctrlKey && e.key === 'z') {
+          // 移除最后一条线并更新状态
+          setLines(lines.slice(0, lines.length - 1))
+        }
+      } else if (userAgent.indexOf('mac') > -1) {
+        // Mac系统
+        if (e.metaKey && e.key === 'z') {
+          // 如果'command'键和'z'键同时被按下，移除最后一条线并更新状态
+          setLines(lines.slice(0, lines.length - 1))
+        }
+      }
+    }
+```
+
+当我将 `if (e.metaKey && e.key === 'z')` 改为 `if (e.key === 'command' || e.key === 'z')` 的时候，摁下 `Command + Z` 也会生效，我自己测试是这个键同时按下第二个代码才会生效，就很奇怪，这似乎违反了它的逻辑？？
+    
