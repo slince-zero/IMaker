@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from 'react'
 import { ImgContext } from '@/context'
 import { ImageDownloadContext } from '@/context/imageDownload'
 import { Spinner } from '@nextui-org/react'
+import HandWriting from '@/page/right/hand-writing'
 export default function CenterBoard() {
   const {
     imgInfo,
@@ -101,6 +102,22 @@ export default function CenterBoard() {
       {/* <div className='absolute bottom-0 right-0 p-3'>
         {authorValue}
       </div> */}
+
+      <div
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%,-50%)',
+          borderRadius: '1.5rem',
+          overflow: 'hidden',
+          zIndex: 1,
+        }}
+        className={proportionValue == '' ? 'aspect-[16/9]' : proportionValue}>
+        <HandWriting />
+      </div>
     </div>
   )
 }
