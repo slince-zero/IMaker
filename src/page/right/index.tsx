@@ -18,6 +18,9 @@ import {
   Tab,
   Divider,
   SelectSection,
+  Card,
+  CardBody,
+  CardHeader,
 } from '@nextui-org/react'
 import { useContext } from 'react'
 import { ImgContext } from '@/context'
@@ -285,6 +288,57 @@ export default function RightBoard() {
           onValueChange={setTitleValue}
           className='py-2'
         />
+
+        <Card className='w-full mt-2'>
+          <CardHeader className='flex'>
+            <img
+              src='/src/assets/images/whiteBoard.svg'
+              alt='shouxiebi'
+              className='w-6 h-6'
+            />
+            <p className='text-md ml-2'>写字板</p>
+          </CardHeader>
+          <CardBody className='py-2 flex'>
+            <div className='w-full flex items-center justify-between'>
+              <Button
+                isIconOnly
+                className='ml-2'>
+                <img
+                  src='/src/assets/images/pen.svg'
+                  alt='shouxiebi'
+                  className='w-6 h-6'
+                />
+              </Button>
+              <Button
+                isIconOnly
+                className='ml-2'>
+                <img
+                  src='/src/assets/images/rubber.svg'
+                  alt='rubber'
+                  className='w-6 h-6'
+                />
+              </Button>
+              <Button
+                isIconOnly
+                className='ml-2'>
+                <img
+                  src='/src/assets/images/penSize.svg'
+                  alt='rubber'
+                  className='w-6 h-6'
+                />
+              </Button>
+              <Button
+                isIconOnly
+                className='ml-2'>
+                <img
+                  src='/src/assets/images/penColor.svg'
+                  alt='rubber'
+                  className='w-6 h-6'
+                />
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
 
         <Divider />
 
