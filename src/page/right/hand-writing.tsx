@@ -1,20 +1,26 @@
-import { useState, useRef } from 'react'
-import { Stage, Layer, Line, Text } from 'react-konva'
+import { useState, useRef, useContext } from 'react'
+import { Stage, Layer, Line } from 'react-konva'
+import { ImgContext } from '@/context'
 
 interface LineInfo {
-  tool: string
+  boardTool: string
   points: number[]
 }
 
+interface ContextProp {
+  boardTool: string
+  penSize: number
+}
+
 function HandWriting() {
-  const [tool, setTool] = useState<string>('pen')
+  const { boardTool, penSize } = useContext<ContextProp>(ImgContext)
   const [lines, setLines] = useState<LineInfo[]>([])
   const isDrawing = useRef<boolean>(false)
 
   const handleMouseDown = (e: any) => {
     isDrawing.current = true
     const pos = e.target.getStage().getPointerPosition()
-    setLines([...lines, { tool, points: [pos.x, pos.y] }])
+    setLines([...lines, { boardTool, points: [pos.x, pos.y] }])
   }
 
   const handleMouseMove = (e: any) => {
@@ -45,35 +51,22 @@ function HandWriting() {
         onMousemove={handleMouseMove}
         onMouseup={handleMouseUp}>
         <Layer>
-          <Text
-            text='Just start drawing'
-            x={5}
-            y={30}
-          />
           {lines.map((line, i) => (
             <Line
               key={i}
               points={line.points}
               stroke='#df4b26'
-              strokeWidth={5}
+              strokeWidth={Number(penSize)}
               tension={0.5}
               lineCap='round'
               lineJoin='round'
               globalCompositeOperation={
-                line.tool === 'eraser' ? 'destination-out' : 'source-over'
+                line.boardTool === 'rubber' ? 'destination-out' : 'source-over'
               }
             />
           ))}
         </Layer>
       </Stage>
-      <select
-        value={tool}
-        onChange={(e) => {
-          setTool(e.target.value)
-        }}>
-        <option value='pen'>Pen</option>
-        <option value='eraser'>Eraser</option>
-      </select>
     </div>
   )
 }

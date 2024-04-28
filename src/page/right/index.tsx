@@ -45,6 +45,9 @@ export default function RightBoard() {
     setOpacityValue,
     proportionValue,
     handleProportionValue,
+    boardTool,
+    setBoardTool,
+    handlePenSize,
   } = useContext(ImgContext)
   const { handleDownloadImage } = useContext(ImageDownloadContext)
 
@@ -56,6 +59,7 @@ export default function RightBoard() {
     borderColor: '#586980',
   }
 
+  // 图片比例
   const img_aspect_x_list = [
     // 横屏
     { label: '1 : 1', value: 'aspect-square', description: '900x900' },
@@ -123,7 +127,29 @@ export default function RightBoard() {
     },
   ]
 
-  // 下载图片
+  // 手写板画笔大小
+  const board_pen_size = [
+    {
+      label: '1',
+      value: '1',
+    },
+    {
+      label: '2',
+      value: '2',
+    },
+    {
+      label: '3',
+      value: '3',
+    },
+    {
+      label: '4',
+      value: '4',
+    },
+    {
+      label: '5',
+      value: '5',
+    },
+  ]
 
   return (
     <div className='flex flex-col bg-slate-500 h-screen'>
@@ -300,33 +326,62 @@ export default function RightBoard() {
           </CardHeader>
           <CardBody className='py-2 flex'>
             <div className='w-full flex items-center justify-between'>
+              {/* 手写笔 */}
               <Button
                 isIconOnly
-                className='ml-2'>
+                style={{ marginLeft: '0.5rem' }}
+                className={boardTool === 'pen' ? ' bg-gray-400' : ''}
+                onClick={() => setBoardTool('pen')}>
                 <img
                   src='/src/assets/images/pen.svg'
                   alt='shouxiebi'
                   className='w-6 h-6'
                 />
               </Button>
+
+              {/* 橡皮擦 */}
               <Button
                 isIconOnly
-                className='ml-2'>
+                style={{ marginLeft: '0.5rem' }}
+                className={boardTool === 'rubber' ? ' bg-gray-400' : ''}
+                onClick={() => setBoardTool('rubber')}>
                 <img
                   src='/src/assets/images/rubber.svg'
                   alt='rubber'
                   className='w-6 h-6'
                 />
               </Button>
-              <Button
-                isIconOnly
-                className='ml-2'>
-                <img
-                  src='/src/assets/images/penSize.svg'
-                  alt='rubber'
-                  className='w-6 h-6'
-                />
-              </Button>
+
+              {/* 画笔宽度 */}
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button
+                    isIconOnly
+                    className='ml-2'>
+                    <img
+                      src='/src/assets/images/penSize.svg'
+                      alt='rubber'
+                      className='w-6 h-6'
+                    />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label='Single a penSize'
+                  variant='shadow'
+                  disallowEmptySelection
+                  selectionMode='single'
+                  onSelectionChange={handlePenSize}>
+                  {board_pen_size.map((item) => (
+                    <DropdownItem
+                      key={item.label}
+                      value={item.value}>
+                      {item.label}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </Dropdown>
+
+              {/* 画笔颜色 */}
               <Button
                 isIconOnly
                 className='ml-2'>

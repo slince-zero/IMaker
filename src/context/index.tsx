@@ -58,6 +58,12 @@ export default function ImgContextProvider({
   // 设置遮罩颜色透明度
   const [opacityValue, setOpacityValue] = useState(0.1)
 
+  // 设置白板工具（铅笔或橡皮擦）
+  const [boardTool, setBoardTool] = useState('pen')
+
+  // 设置铅笔大小
+  const [penSize, setPenSize] = useState<number>(1)
+
   // 获取图片
   async function getImage(searchText: string = '') {
     try {
@@ -198,6 +204,12 @@ export default function ImgContextProvider({
     setHexColor(color.hex.toUpperCase())
   }
 
+  // 设置铅笔大小
+  function handlePenSize(val: Set<any>) {
+    let newArr = Array.from(val)
+    setPenSize(newArr[0])
+  }
+
   return (
     <ImgContext.Provider
       value={{
@@ -233,6 +245,10 @@ export default function ImgContextProvider({
         setOpacityValue,
         proportionValue,
         handleProportionValue,
+        boardTool,
+        setBoardTool,
+        penSize,
+        handlePenSize,
       }}>
       {children}
     </ImgContext.Provider>
