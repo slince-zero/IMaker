@@ -64,6 +64,9 @@ export default function ImgContextProvider({
   // 设置铅笔大小
   const [penSize, setPenSize] = useState<number>(1)
 
+  // 设置铅笔颜色
+  const [board_pen_color, setBoardPenColor] = useState('#e23922')
+
   // 获取图片
   async function getImage(searchText: string = '') {
     try {
@@ -210,6 +213,10 @@ export default function ImgContextProvider({
     setPenSize(newArr[0])
   }
 
+  // 设置铅笔颜色
+  function handleChangeBoardPenColor(color: any) {
+    setBoardPenColor(color.hex.toUpperCase())
+  }
   return (
     <ImgContext.Provider
       value={{
@@ -249,6 +256,8 @@ export default function ImgContextProvider({
         setBoardTool,
         penSize,
         handlePenSize,
+        board_pen_color,
+        handleChangeBoardPenColor,
       }}>
       {children}
     </ImgContext.Provider>

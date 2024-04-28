@@ -48,6 +48,8 @@ export default function RightBoard() {
     boardTool,
     setBoardTool,
     handlePenSize,
+    board_pen_color,
+    handleChangeBoardPenColor,
   } = useContext(ImgContext)
   const { handleDownloadImage } = useContext(ImageDownloadContext)
 
@@ -366,7 +368,7 @@ export default function RightBoard() {
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu
-                  aria-label='Single a penSize'
+                  aria-label='Select a penSize'
                   variant='shadow'
                   disallowEmptySelection
                   selectionMode='single'
@@ -382,15 +384,47 @@ export default function RightBoard() {
               </Dropdown>
 
               {/* 画笔颜色 */}
-              <Button
-                isIconOnly
-                className='ml-2'>
-                <img
-                  src='/src/assets/images/penColor.svg'
-                  alt='rubber'
-                  className='w-6 h-6'
-                />
-              </Button>
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button
+                    isIconOnly
+                    className='ml-2'
+                    style={{ backgroundColor: board_pen_color }}>
+                    <img
+                      src='/src/assets/images/penColor.svg'
+                      alt='rubber'
+                      className='w-6 h-6'
+                    />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label='Select a color'
+                  variant='flat'
+                  disallowEmptySelection
+                  selectionMode='single'>
+                  <DropdownItem textValue='color'>
+                    <div className='m-2'>
+                      <CirclePicker
+                        colors={[
+                          '#1f2937',
+                          '#e23922',
+                          '#9c27b0',
+                          '#673ab7',
+                          '#3f51b5',
+                          '#2196f3',
+                          '#03a9f4',
+                          '#00bcd4',
+                          '#009688',
+                          '#4caf50',
+                          '#8bc34a',
+                          '#cddc39',
+                        ]}
+                        onChangeComplete={handleChangeBoardPenColor}
+                      />
+                    </div>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             </div>
           </CardBody>
         </Card>

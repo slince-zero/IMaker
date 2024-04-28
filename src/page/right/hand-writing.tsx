@@ -10,10 +10,12 @@ interface LineInfo {
 interface ContextProp {
   boardTool: string
   penSize: number
+  board_pen_color: string
 }
 
 function HandWriting() {
-  const { boardTool, penSize } = useContext<ContextProp>(ImgContext)
+  const { boardTool, penSize, board_pen_color } =
+    useContext<ContextProp>(ImgContext)
   const [lines, setLines] = useState<LineInfo[]>([])
   const isDrawing = useRef<boolean>(false)
 
@@ -55,7 +57,7 @@ function HandWriting() {
             <Line
               key={i}
               points={line.points}
-              stroke='#df4b26'
+              stroke={board_pen_color}
               strokeWidth={Number(penSize)}
               tension={0.5}
               lineCap='round'
