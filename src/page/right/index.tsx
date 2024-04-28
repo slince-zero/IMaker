@@ -26,7 +26,13 @@ import { useContext } from 'react'
 import { ImgContext } from '@/context'
 import { CirclePicker } from 'react-color'
 import { ImageDownloadContext } from '@/context/imageDownload'
-
+import {
+  PenLogo,
+  RubberLogo,
+  PenSizeLogo,
+  PenColorLogo,
+  WhiteBoardLogo,
+} from './write-logo'
 export default function RightBoard() {
   const {
     authorValue,
@@ -47,6 +53,7 @@ export default function RightBoard() {
     handleProportionValue,
     boardTool,
     setBoardTool,
+    penSize,
     handlePenSize,
     board_pen_color,
     handleChangeBoardPenColor,
@@ -319,11 +326,7 @@ export default function RightBoard() {
 
         <Card className='w-full mt-2'>
           <CardHeader className='flex'>
-            <img
-              src='/src/assets/images/whiteBoard.svg'
-              alt='shouxiebi'
-              className='w-6 h-6'
-            />
+            <WhiteBoardLogo />
             <p className='text-md ml-2'>写字板</p>
           </CardHeader>
           <CardBody className='py-2 flex'>
@@ -334,11 +337,7 @@ export default function RightBoard() {
                 style={{ marginLeft: '0.5rem' }}
                 className={boardTool === 'pen' ? ' bg-gray-400' : ''}
                 onClick={() => setBoardTool('pen')}>
-                <img
-                  src='/src/assets/images/pen.svg'
-                  alt='shouxiebi'
-                  className='w-6 h-6'
-                />
+                <PenLogo />
               </Button>
 
               {/* 橡皮擦 */}
@@ -347,11 +346,7 @@ export default function RightBoard() {
                 style={{ marginLeft: '0.5rem' }}
                 className={boardTool === 'rubber' ? ' bg-gray-400' : ''}
                 onClick={() => setBoardTool('rubber')}>
-                <img
-                  src='/src/assets/images/rubber.svg'
-                  alt='rubber'
-                  className='w-6 h-6'
-                />
+                <RubberLogo />
               </Button>
 
               {/* 画笔宽度 */}
@@ -360,11 +355,7 @@ export default function RightBoard() {
                   <Button
                     isIconOnly
                     className='ml-2'>
-                    <img
-                      src='/src/assets/images/penSize.svg'
-                      alt='rubber'
-                      className='w-6 h-6'
-                    />
+                    <PenSizeLogo />
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu
@@ -372,6 +363,7 @@ export default function RightBoard() {
                   variant='shadow'
                   disallowEmptySelection
                   selectionMode='single'
+                  selectedKeys={penSize !== '2' ? ['2'] : [penSize]}
                   onSelectionChange={handlePenSize}>
                   {board_pen_size.map((item) => (
                     <DropdownItem
@@ -390,11 +382,7 @@ export default function RightBoard() {
                     isIconOnly
                     className='ml-2'
                     style={{ backgroundColor: board_pen_color }}>
-                    <img
-                      src='/src/assets/images/penColor.svg'
-                      alt='rubber'
-                      className='w-6 h-6'
-                    />
+                    <PenColorLogo />
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu

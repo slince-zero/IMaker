@@ -62,7 +62,7 @@ export default function ImgContextProvider({
   const [boardTool, setBoardTool] = useState('pen')
 
   // 设置铅笔大小
-  const [penSize, setPenSize] = useState<number>(1)
+  const [penSize, setPenSize] = useState<number>(2)
 
   // 设置铅笔颜色
   const [board_pen_color, setBoardPenColor] = useState('#e23922')
