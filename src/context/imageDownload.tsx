@@ -2,7 +2,7 @@ import { ReactNode, createContext, useRef, MutableRefObject } from 'react'
 import domtoimage from 'dom-to-image'
 // 首先定义Context的类型
 interface ImageDownloadContextProps {
-  imageContainerRef: any// 适当地改变类型以匹配`useRef`的返回类型
+  imageContainerRef: any // 适当地改变类型以匹配`useRef`的返回类型
   handleDownloadImage: (type: 'JPG' | 'PNG' | 'SVG') => void // 或者具有更详细类型的函数签名
 }
 
@@ -27,10 +27,26 @@ export const ImageDownloadProvider = ({
         let dataUrl
         switch (type) {
           case 'JPG':
-            dataUrl = await domtoimage.toJpeg(node)
+            dataUrl = await domtoimage.toJpeg(node, {
+              width: node.clientWidth * 2,
+              height: node.clientHeight * 2,
+              style: {
+                transform: 'scale(2)',
+                transformOrigin: 'top left',
+              },
+              quality: 1.0,
+            })
             break
           case 'PNG':
-            dataUrl = await domtoimage.toPng(node)
+            dataUrl = await domtoimage.toPng(node, {
+              width: node.clientWidth * 2,
+              height: node.clientHeight * 2,
+              style: {
+                transform: 'scale(2)',
+                transformOrigin: 'top left',
+              },
+              quality: 1.0,
+            })
             break
           case 'SVG':
             dataUrl = await domtoimage.toSvg(node)
