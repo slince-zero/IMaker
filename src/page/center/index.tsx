@@ -16,13 +16,11 @@ export default function CenterBoard() {
     hexColor,
     opacityValue,
     proportionValue,
-    boardTool,
   } = useContext(ImgContext)
 
   const { imageContainerRef } = useContext(ImageDownloadContext)
 
   const [isLoading, setIsLoading] = useState(false)
-  // console.log(uploadCurrentImage)
 
   useEffect(() => {
     if (imgInfo?.urls != null) {
