@@ -144,3 +144,8 @@ const { boardTool, penSize } = useContext<ContextProp>(ImgContext)
 
 当我将 `if (e.metaKey && e.key === 'z')` 改为 `if (e.key === 'command' || e.key === 'z')` 的时候，摁下 `Command + Z` 也会生效，我自己测试是这个键同时按下第二个代码才会生效，就很奇怪，这似乎违反了它的逻辑？？
     
+
+### 鼠标指针样式问题
+
+一开始我以为是路径问题，发现控制台的网络请求可以正确看到指针的图片，最后发现是图片大小的问题。
+在 Chrome、Firefox 和 Safari 中，自定义光标图像的最大高度和宽度都为 32px。如果你的图像超过这个限制，那么它只会显示为默认的光标。

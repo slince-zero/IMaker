@@ -30,18 +30,17 @@ export default function CenterBoard() {
     }
   }, [imgInfo])
 
-  // 设置鼠标样式-存在一些问题，不能正确显示
-  useEffect(() => {
-    const centerBoardElement = document.getElementsByClassName(
-      'img-area'
-    )[0] as HTMLElement
-    if (boardTool === 'pen') {
-      centerBoardElement.style.cursor = 'url(/assets/images/pen.svg),auto'
-    } else if (boardTool === 'rubber') {
-      centerBoardElement.style.cursor =
-        'url(/assets/images/rubber.svg),auto'
-    }
-  }, [boardTool])
+  // 设置鼠标样式-存在一些问题，现在可以正确显示了，不过存在精度问题，这里就不展示了
+  // useEffect(() => {
+  //   const centerBoardElement = document.getElementsByClassName(
+  //     'img-area'
+  //   )[0] as HTMLElement
+  //   if (boardTool === 'pen') {
+  //     centerBoardElement.style.cursor = 'url(/pen.svg),auto'
+  //   } else if (boardTool === 'rubber') {
+  //     centerBoardElement.style.cursor = 'url(/rubber.svg),auto'
+  //   }
+  // }, [boardTool])
 
   return (
     <div
