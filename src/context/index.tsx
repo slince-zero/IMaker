@@ -38,6 +38,9 @@ export default function ImgContextProvider({
   // 图片比例
   const [proportionValue, setProportionValue] = useState('aspect-[16/9]')
 
+  // 图片形状（圆角或者方形）
+  const [isCircle, setIsCircle] = useState(true)
+
   // 作者标签值
   const [authorValue, setAuthorValue] = useState('@IMker')
 
@@ -128,6 +131,11 @@ export default function ImgContextProvider({
     console.log(e.target.value)
 
     setProportionValue(e.target.value)
+  }
+
+  // 选择形状
+  function handleIsCircle() {
+    setIsCircle(!isCircle)
   }
 
   // 切换字体
@@ -258,6 +266,8 @@ export default function ImgContextProvider({
         handlePenSize,
         board_pen_color,
         handleChangeBoardPenColor,
+        isCircle,
+        handleIsCircle,
       }}>
       {children}
     </ImgContext.Provider>

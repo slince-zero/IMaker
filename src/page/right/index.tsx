@@ -57,6 +57,8 @@ export default function RightBoard() {
     handlePenSize,
     board_pen_color,
     handleChangeBoardPenColor,
+    isCircle,
+    handleIsCircle,
   } = useContext(ImgContext)
   const { handleDownloadImage } = useContext(ImageDownloadContext)
 
@@ -176,10 +178,6 @@ export default function RightBoard() {
                 variant='flat'
                 target='_blank'
                 href='https://github.com/slince-zero/img-maker'>
-                {/* github logo */}
-                {/* <i
-                  className={`devicon-github-plain text-[#2F6EE7] dev-icon text-xl`}
-                /> */}
                 GitHub
               </Button>
             </NavbarItem>
@@ -189,34 +187,47 @@ export default function RightBoard() {
 
       <div className='flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap p-2'>
         {/* 比例，控制图片大小 */}
-        <Select
-          label='比例'
-          defaultSelectedKeys={[proportionValue]}
-          onChange={handleProportionValue}
-          className='max-w-xs py-2'>
-          <SelectSection
-            showDivider
-            title='横屏'>
-            {img_aspect_x_list.map((item) => (
-              <SelectItem
-                key={item.value}
-                value={item.value}>
-                {item.label}
-              </SelectItem>
-            ))}
-          </SelectSection>
-          <SelectSection
-            showDivider
-            title='竖屏'>
-            {img_aspect_y_list.map((item) => (
-              <SelectItem
-                key={item.value}
-                value={item.value}>
-                {item.label}
-              </SelectItem>
-            ))}
-          </SelectSection>
-        </Select>
+        <div className='flex flex-row w-full items-center'>
+          <Select
+            label='比例'
+            defaultSelectedKeys={[proportionValue]}
+            onChange={handleProportionValue}
+            className='max-w-xs py-2'>
+            <SelectSection
+              showDivider
+              title='横屏'>
+              {img_aspect_x_list.map((item) => (
+                <SelectItem
+                  key={item.value}
+                  value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectSection>
+            <SelectSection
+              showDivider
+              title='竖屏'>
+              {img_aspect_y_list.map((item) => (
+                <SelectItem
+                  key={item.value}
+                  value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectSection>
+          </Select>
+
+          <Select
+            label='形状'
+            defaultSelectedKeys={[isCircle ? 'circle' : 'square']}
+            onChange={handleIsCircle}
+            className='max-w-xs ml-2 py-2'>
+            <SelectSection>
+              <SelectItem key='circle'>圆角</SelectItem>
+              <SelectItem key='square'>方形</SelectItem>
+            </SelectSection>
+          </Select>
+        </div>
         <Divider />
 
         {/* 遮罩+颜色选择 */}

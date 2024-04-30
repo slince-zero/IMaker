@@ -16,6 +16,7 @@ export default function CenterBoard() {
     hexColor,
     opacityValue,
     proportionValue,
+    isCircle,
   } = useContext(ImgContext)
 
   const { imageContainerRef } = useContext(ImageDownloadContext)
@@ -52,7 +53,12 @@ export default function CenterBoard() {
             <img
               src={uploadCurrentImage?.urls?.regular}
               onLoad={() => setIsLoading(false)}
-              className='rounded-3xl object-cover h-full w-full'
+              style={{
+                objectFit: 'cover',
+                height: '100%',
+                width: '100%',
+              }}
+              className={!isCircle ? '' : 'rounded-3xl'}
             />
           )}
         </div>
@@ -65,7 +71,12 @@ export default function CenterBoard() {
               src={imgInfo?.urls?.regular}
               alt={imgInfo?.alt_description}
               onLoad={() => setIsLoading(false)}
-              className='rounded-3xl object-cover h-full w-full'
+              style={{
+                objectFit: 'cover',
+                height: '100%',
+                width: '100%',
+              }}
+              className={!isCircle ? '' : 'rounded-3xl'}
             />
           )}
         </div>
