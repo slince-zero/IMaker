@@ -89,7 +89,7 @@ export default function CenterBoard() {
           height: '100%',
           top: '0',
           left: '0',
-          borderRadius: '1.5rem',
+          borderRadius: isCircle ? '1.5rem' : '0',
           backgroundColor: hexColor,
           opacity: opacityValue,
         }}></div>
