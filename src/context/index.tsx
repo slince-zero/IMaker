@@ -265,6 +265,7 @@ export default function ImgContextProvider({
         penSize,
         handlePenSize,
         board_pen_color,
+        setHexColor,
         handleChangeBoardPenColor,
         isCircle,
         handleIsCircle,

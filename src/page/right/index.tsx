@@ -59,6 +59,7 @@ export default function RightBoard() {
     handleChangeBoardPenColor,
     isCircle,
     handleIsCircle,
+    setHexColor
   } = useContext(ImgContext)
   const { handleDownloadImage } = useContext(ImageDownloadContext)
 
@@ -235,9 +236,10 @@ export default function RightBoard() {
           <div className='flex w-full items-center justify-between '>
             <div className='w-4/5'>
               <Input
-                type='url'
+                type='text'
                 label='遮罩'
                 value={hexColor}
+                onChange={(e)=>setHexColor(e.target.value)}
               />
             </div>
 
