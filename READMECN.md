@@ -48,6 +48,8 @@ GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
 
 ## 遇到的一些问题
 
+### 如果你使用了 verbal 部署你的项目，请一定记得添加环境变量
+
 ### useContext 很灵活
 
 通过 createContext 创建一个 contextProvider 就可以在任意组件里面传递数据，而且很灵活，可以直接在跟组件里面用 contextProvider 来包裹根组件。
