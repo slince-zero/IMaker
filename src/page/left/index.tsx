@@ -16,7 +16,7 @@ import {
 } from '@nextui-org/react'
 import { UploadLogo } from './logo'
 import { ImgContext } from '@/context'
-import { Key, useContext, useState } from 'react'
+import { Key, useContext, useEffect, useState } from 'react'
 
 export default function LeftBoard() {
   const {
@@ -33,8 +33,12 @@ export default function LeftBoard() {
 
   // 用于AI生成图片的弹出窗
   const { isOpen, onOpen, onClose } = useDisclosure()
+  // 用于用户输入的AI图片描述
   const [aiValue, setAiValue] = useState('')
+  // 用于AI生成图片的url
   const [aiResult, setAiResult] = useState<any>(null)
+  // loading
+  const [loading, setLoading] = useState(false)
 
   function handleUploadImage(event: any) {
     const file = event.target.files[0]
@@ -50,6 +54,7 @@ export default function LeftBoard() {
     onOpen()
   }
 
+  // 发送请求
   async function query(data: any) {
     const response = await fetch(
       'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0',
@@ -65,13 +70,29 @@ export default function LeftBoard() {
     return result
   }
 
+  // 生成AI图片
   function handleGenerateAIImage() {
-    const data = {
-      inputs: aiValue,
+    try {
+      setLoading(true)
+      const data = {
+        inputs: aiValue,
+      }
+      query(data).then((res) => {
+        const url = URL.createObjectURL(res)
+        setAiResult(url)
+        setLoading(false)
+      })
+    } catch (e) {
+      console.log(e)
     }
-    query(data).then((res) => {
-      const url = URL.createObjectURL(res)
-      setAiResult(url)
+  }
+
+  // 提交AI图片到center组件
+  function handleSubmitAIImage() {
+    console.log('111', aiResult)
+
+    setImgInfo({
+      urls: aiResult,
     })
   }
 
@@ -193,22 +214,25 @@ export default function LeftBoard() {
                     <div className='flex'>
                       <Input
                         type='text'
-                        placeholder='请输入内容'
+                        placeholder='请输入内容(英文)'
                         onChange={(e) => setAiValue(e.target.value)}
                       />
                       <Button
                         color='success'
                         className='ml-2'
+                        isLoading={loading}
                         onClick={handleGenerateAIImage}>
                         生成
                       </Button>
                     </div>
                     <div>
-                      <img
-                        src={aiResult}
-                        alt='ai'
-                        className='w-[400px] h-[400px]'
-                      />
+                      {aiResult && (
+                        <img
+                          src={aiResult}
+                          alt='ai-img'
+                          className='w-[400px] h-[400px] rounded-md mt-2'
+                        />
+                      )}
                     </div>
                   </div>
                 </ModalBody>
@@ -220,7 +244,7 @@ export default function LeftBoard() {
                     取消
                   </Button>
                   <Button
-                    onPress={onClose}
+                    onClick={handleSubmitAIImage}
                     className='bg-gradient-to-tr from-pink-500 to-yellow-500'>
                     使用
                   </Button>
