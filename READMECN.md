@@ -149,3 +149,29 @@ const { boardTool, penSize } = useContext<ContextProp>(ImgContext)
 
 一开始我以为是路径问题，发现控制台的网络请求可以正确看到指针的图片，最后发现是图片大小的问题。
 在 Chrome、Firefox 和 Safari 中，自定义光标图像的最大高度和宽度都为 32px。如果你的图像超过这个限制，那么它只会显示为默认的光标。
+
+
+## 调用AI生成图片API遇到的问题
+
+我用的是hugging face上的 [stable-diffusion-xl-base-1.0](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0?text=1+girl)
+
+下面是API的使用
+```js
+async function query(data) {
+	const response = await fetch(
+		"https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
+		{
+			headers: { Authorization: "Bearer {API_TOKEN}" },
+			method: "POST",
+			body: JSON.stringify(data),
+		}
+	);
+	const result = await response.blob();
+	return result;
+}
+query({"inputs": "Astronaut riding a horse"}).then((response) => {
+	// Use image
+});
+```
+
+可以看到，API返回的是一个 `blob` 对象，需要转换成url才能使用，因此我使用了 `createObjectURL` 来转换成url, 但是这里有一个问题，就是这个数据是临时存在的，如果刷新页面，或者关闭，或者跳转页面，就会消失，因为我是只有一个页面，所以不存在这个问题；但我还是将其移动到了 `Context` 状态管理当中，这样就不会出现这个问题了。
