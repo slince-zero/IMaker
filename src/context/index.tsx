@@ -250,6 +250,17 @@ export default function ImgContextProvider({
     return result
   }
 
+  function blobToDataURL(blob: any) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onloadend = function () {
+        resolve(reader.result)
+      }
+      reader.onerror = reject
+      reader.readAsDataURL(blob)
+    })
+  }
+
   // 生成AI图片
   function handleGenerateAIImage() {
     try {
@@ -258,8 +269,9 @@ export default function ImgContextProvider({
         inputs: aiValue,
       }
       query(data).then((res) => {
-        const url = URL.createObjectURL(res)
-        setAiResult(url)
+        blobToDataURL(res).then((url) => {
+          setAiResult(url)
+        })
         setLoadingAIImage(false)
       })
     } catch (e) {
@@ -278,8 +290,6 @@ export default function ImgContextProvider({
     })
   }
 
-
-  
   return (
     <ImgContext.Provider
       value={{
