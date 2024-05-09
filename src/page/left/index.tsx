@@ -7,10 +7,16 @@ import {
   Button,
   Input,
   ScrollShadow,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from '@nextui-org/react'
 import { UploadLogo } from './logo'
 import { ImgContext } from '@/context'
-import { Key, useContext } from 'react'
+import { Key, useContext, useState } from 'react'
 
 export default function LeftBoard() {
   const {
@@ -25,6 +31,11 @@ export default function LeftBoard() {
     setIsUpload,
   } = useContext(ImgContext)
 
+  // 用于AI生成图片的弹出窗
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [aiValue, setAiValue] = useState('')
+  const [aiResult, setAiResult] = useState<any>(null)
+
   function handleUploadImage(event: any) {
     const file = event.target.files[0]
     if (file) {
@@ -32,6 +43,36 @@ export default function LeftBoard() {
       // 浏览器对于文件重新选择，不会执行上次的操作，所以这里清空值，让上传相同图片可以执行
       event.target.value = ''
     }
+  }
+
+  // 打开弹出窗
+  function handleOpen() {
+    onOpen()
+  }
+
+  async function query(data: any) {
+    const response = await fetch(
+      'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0',
+      {
+        headers: {
+          Authorization: 'Bearer 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',
+        },
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    )
+    const result = await response.blob()
+    return result
+  }
+
+  function handleGenerateAIImage() {
+    const data = {
+      inputs: aiValue,
+    }
+    query(data).then((res) => {
+      const url = URL.createObjectURL(res)
+      setAiResult(url)
+    })
   }
 
   return (
@@ -90,7 +131,7 @@ export default function LeftBoard() {
       </ScrollShadow>
 
       <>
-        <Navbar>
+        <Navbar className='relative'>
           {/* 上传图片 */}
           <label>
             <input
@@ -125,7 +166,69 @@ export default function LeftBoard() {
               </Button>
             </NavbarItem>
           </NavbarContent>
+
+          <div className='flex absolute top-[-40px] left-2 w-24 h-7 bg-black bg-opacity-65 rounded-[8px] items-center justify-center '>
+            <Button
+              onPress={handleOpen}
+              className='text-white cursor-pointer'>
+              🌟AI生成🔥
+            </Button>
+          </div>
         </Navbar>
+      </>
+
+      <>
+        <Modal
+          backdrop='blur'
+          isOpen={isOpen}
+          onClose={onClose}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className='flex flex-col gap-1'>
+                  AI生成（test）
+                </ModalHeader>
+                <ModalBody>
+                  <div>
+                    <div className='flex'>
+                      <Input
+                        type='text'
+                        placeholder='请输入内容'
+                        onChange={(e) => setAiValue(e.target.value)}
+                      />
+                      <Button
+                        color='success'
+                        className='ml-2'
+                        onClick={handleGenerateAIImage}>
+                        生成
+                      </Button>
+                    </div>
+                    <div>
+                      <img
+                        src={aiResult}
+                        alt='ai'
+                        className='w-[400px] h-[400px]'
+                      />
+                    </div>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    color='danger'
+                    variant='light'
+                    onPress={onClose}>
+                    取消
+                  </Button>
+                  <Button
+                    onPress={onClose}
+                    className='bg-gradient-to-tr from-pink-500 to-yellow-500'>
+                    使用
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
       </>
     </div>
   )
