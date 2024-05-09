@@ -35,6 +35,13 @@ export default function ImgContextProvider({
   // 用于判断是否是上传图片，还是默认通过API获取的图片
   const [isUpload, setIsUpload] = useState(false)
 
+  // 用于用户输入的AI图片描述
+  const [aiValue, setAiValue] = useState('')
+  // 用于AI生成图片的url
+  const [aiResult, setAiResult] = useState<any>(null)
+  // loading
+  const [loadingAIImage, setLoadingAIImage] = useState(false)
+
   // 图片比例
   const [proportionValue, setProportionValue] = useState('aspect-[16/9]')
 
@@ -225,6 +232,53 @@ export default function ImgContextProvider({
   function handleChangeBoardPenColor(color: any) {
     setBoardPenColor(color.hex.toUpperCase())
   }
+
+  // 发送请求
+  async function query(data: any) {
+    const response = await fetch(
+      'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0',
+      {
+        headers: {
+          Authorization: 'Bearer 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',
+        },
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    )
+    const result = await response.blob()
+    return result
+  }
+
+  // 生成AI图片
+  function handleGenerateAIImage() {
+    try {
+      setLoadingAIImage(true)
+      const data = {
+        inputs: aiValue,
+      }
+      query(data).then((res) => {
+        const url = URL.createObjectURL(res)
+        setAiResult(url)
+        setLoadingAIImage(false)
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  // 提交AI图片到center组件
+  function handleSubmitAIImage() {
+    console.log('111', aiResult)
+
+    setImgInfo({
+      urls: {
+        regular: aiResult,
+      },
+    })
+  }
+
+
+  
   return (
     <ImgContext.Provider
       value={{
@@ -269,6 +323,11 @@ export default function ImgContextProvider({
         handleChangeBoardPenColor,
         isCircle,
         handleIsCircle,
+        setAiValue,
+        aiResult,
+        loadingAIImage,
+        handleGenerateAIImage,
+        handleSubmitAIImage,
       }}>
       {children}
     </ImgContext.Provider>

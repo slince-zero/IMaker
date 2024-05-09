@@ -24,6 +24,8 @@ export default function CenterBoard() {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
+    console.log(imgInfo,'aaaa');
+    
     if (imgInfo?.urls != null) {
       setIsLoading(true)
     }
