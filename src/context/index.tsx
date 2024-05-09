@@ -235,11 +235,12 @@ export default function ImgContextProvider({
 
   // 发送请求
   async function query(data: any) {
+    const accessToken = import.meta.env.VITE_PUBLIC_HUGGINGFACE_API_KEY
     const response = await fetch(
       'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0',
       {
         headers: {
-          Authorization: 'Bearer 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',
+          Authorization: 'Bearer ' + accessToken,
         },
         method: 'POST',
         body: JSON.stringify(data),

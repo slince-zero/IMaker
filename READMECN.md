@@ -3,8 +3,6 @@
 </p>
 <h1 align="center"> IMaker </h1>
 
-
-
 ## 介绍
 
 Imkaer 是一款用来设计封面的工具，比如你可以为你的博客、视频、公众号等设计你自己喜欢的封面。
@@ -13,33 +11,43 @@ Imkaer 是一款用来设计封面的工具，比如你可以为你的博客、�
 
 ![intro](/public/intro.png)
 
-
 ## 部署
 
-👉第一步：创建一个`.env.local`文件，更改 `.env.local` 中的 `VITE_PUBLIC_UNSPLASH_API_KEY`
+🌟 第一步：创建一个`.env.local`文件，更改 `.env.local` 中的 `VITE_PUBLIC_UNSPLASH_API_KEY`
 
     VITE_PUBLIC_UNSPLASH_API_KEY = your_unsplash_api_key
 
 [https://unsplash.com/documentation](https://unsplash.com/documentation)
 
-👉第二步：克隆项目
+💥 第二步：更改 `.env.local` 中的 `VITE_PUBLIC_HUGGINGFACE_API_KEY`
+
+    VITE_PUBLIC_HUGGINGFACE_API_KEY = your_huggingface_api_key
+
+[https://huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
+
+🌈 第三步：克隆项目
 
     git clone git@github.com:slince-zero/IMaker.git
     cd img-maker
-    npm i 
+    npm i
     npm run dev
-  
+
 打开 http://localhost:5173 查看效果
 
 ## 感谢以下开源项目
+
 https://github.com/gezhaoyou/picprose
 
 
+## 新特性
+ - 通过 AI 生成图片 🔥
+
 ## 协议
+
 GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
 
-
 ## 遇到的一些问题
+
 ### useContext 很灵活
 
 通过 createContext 创建一个 contextProvider 就可以在任意组件里面传递数据，而且很灵活，可以直接在跟组件里面用 contextProvider 来包裹根组件。
@@ -102,7 +110,6 @@ GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
 1. 定义了一个新的 `ImageDownloadContext`, 并且在其中提供了一个 `imageContainerRef` 和 `handleDownloadImage`
 2. 在 `RightBoard` 中接收 `handleDownloadImage`，在 `CenterBoard` 中接收 `imageContainerRef`
 
-
 ### 组件间传递数据，数据类型丢失
 
 `react-konva` 这个库中的 `Line` 组件要求传递的 `strokeWidth，必须为` number 类型
@@ -117,61 +124,59 @@ interface ContextProp {
 const { boardTool, penSize } = useContext<ContextProp>(ImgContext)
 ```
 
-
 ### 关于撤销功能
 
 ```ts
 // 监听键盘事件
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // 判断一下电脑系统
-      const userAgent = navigator.userAgent.toLowerCase()
+const handleKeyDown = (e: KeyboardEvent) => {
+  // 判断一下电脑系统
+  const userAgent = navigator.userAgent.toLowerCase()
 
-      if (userAgent.indexOf('windows') > -1) {
-        // Windows系统
-        if (e.ctrlKey && e.key === 'z') {
-          // 移除最后一条线并更新状态
-          setLines(lines.slice(0, lines.length - 1))
-        }
-      } else if (userAgent.indexOf('mac') > -1) {
-        // Mac系统
-        if (e.metaKey && e.key === 'z') {
-          // 如果'command'键和'z'键同时被按下，移除最后一条线并更新状态
-          setLines(lines.slice(0, lines.length - 1))
-        }
-      }
+  if (userAgent.indexOf('windows') > -1) {
+    // Windows系统
+    if (e.ctrlKey && e.key === 'z') {
+      // 移除最后一条线并更新状态
+      setLines(lines.slice(0, lines.length - 1))
     }
+  } else if (userAgent.indexOf('mac') > -1) {
+    // Mac系统
+    if (e.metaKey && e.key === 'z') {
+      // 如果'command'键和'z'键同时被按下，移除最后一条线并更新状态
+      setLines(lines.slice(0, lines.length - 1))
+    }
+  }
+}
 ```
 
 当我将 `if (e.metaKey && e.key === 'z')` 改为 `if (e.key === 'command' || e.key === 'z')` 的时候，摁下 `Command + Z` 也会生效，我自己测试是这个键同时按下第二个代码才会生效，就很奇怪，这似乎违反了它的逻辑？？
-    
 
 ### 鼠标指针样式问题
 
 一开始我以为是路径问题，发现控制台的网络请求可以正确看到指针的图片，最后发现是图片大小的问题。
 在 Chrome、Firefox 和 Safari 中，自定义光标图像的最大高度和宽度都为 32px。如果你的图像超过这个限制，那么它只会显示为默认的光标。
 
+## 调用 AI 生成图片 API 遇到的问题
 
-## 调用AI生成图片API遇到的问题
+我用的是 hugging face 上的 [stable-diffusion-xl-base-1.0](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0?text=1+girl)
 
-我用的是hugging face上的 [stable-diffusion-xl-base-1.0](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0?text=1+girl)
+下面是 API 的使用
 
-下面是API的使用
 ```js
 async function query(data) {
-	const response = await fetch(
-		"https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
-		{
-			headers: { Authorization: "Bearer {API_TOKEN}" },
-			method: "POST",
-			body: JSON.stringify(data),
-		}
-	);
-	const result = await response.blob();
-	return result;
+  const response = await fetch(
+    'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0',
+    {
+      headers: { Authorization: 'Bearer {API_TOKEN}' },
+      method: 'POST',
+      body: JSON.stringify(data),
+    }
+  )
+  const result = await response.blob()
+  return result
 }
-query({"inputs": "Astronaut riding a horse"}).then((response) => {
-	// Use image
-});
+query({ inputs: 'Astronaut riding a horse' }).then((response) => {
+  // Use image
+})
 ```
 
-可以看到，API返回的是一个 `blob` 对象，需要转换成url才能使用，因此我使用了 `createObjectURL` 来转换成url, 但是这里有一个问题，就是这个数据是临时存在的，如果刷新页面，或者关闭，或者跳转页面，就会消失，因为我是只有一个页面，所以不存在这个问题；但我还是将其移动到了 `Context` 状态管理当中，这样就不会出现这个问题了。
+可以看到，API 返回的是一个 `blob` 对象，需要转换成 url 才能使用，因此我使用了 `createObjectURL` 来转换成 url, 但是这里有一个问题，就是这个数据是临时存在的，如果刷新页面，或者关闭，或者跳转页面，就会消失，因为我是只有一个页面，所以不存在这个问题；但我还是将其移动到了 `Context` 状态管理当中，这样就不会出现这个问题了。
