@@ -27,6 +27,7 @@ export default function ImgContextProvider({
 }) {
   const [imageList, setImageList] = useState<ImageItem[]>([])
   const [searchValue, setSearchValue] = useState('')
+  // 搜索 button 的loading
   const [isLoading, setIsLoading] = useState(false)
   // setImgInfo在left组件中存储图片数据，imgInfo给center组件传递图片数据
   const [imgInfo, setImgInfo] = useState<any>({})
@@ -100,7 +101,6 @@ export default function ImgContextProvider({
       } else {
         setImageList(data) // 直接访问 Unsplash collections/photos 数据在顶层
       }
-      // console.log(imageList,'33')
     } catch (e) {
       console.error(e)
     } finally {
@@ -278,8 +278,6 @@ export default function ImgContextProvider({
     })
   }
 
-
-  
   return (
     <ImgContext.Provider
       value={{
