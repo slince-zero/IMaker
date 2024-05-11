@@ -16,13 +16,12 @@ import {
 } from '@nextui-org/react'
 import { UploadLogo } from './logo'
 import { ImgContext } from '@/context'
-import { Key, useContext, useEffect, useRef, useState } from 'react'
-import { log } from 'console'
+import { Key, useContext } from 'react'
 
 export default function LeftBoard() {
   const {
     imageList,
-    setImageList,
+
     searchValue,
     setSearchValue,
     isLoading,
@@ -41,10 +40,6 @@ export default function LeftBoard() {
   // 用于AI生成图片的弹出窗
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  // 滚动到最底部，再次加载图片的 loading
-  const [scrollLoading, setScrollLoading] = useState(false)
-  const scrollRef = useRef<any>(null)
-
   function handleUploadImage(event: any) {
     const file = event.target.files[0]
     if (file) {
@@ -58,47 +53,6 @@ export default function LeftBoard() {
   function handleOpen() {
     onOpen()
   }
-
-  // 滚动加载图片
-  async function getScrollRandomImage() {
-    console.log('jinjininij')
-
-    if (scrollLoading) return
-
-    try {
-      setScrollLoading(true)
-      const accessKey = import.meta.env.VITE_PUBLIC_UNSPLASH_API_KEY
-      const endpoint = 'https://api.unsplash.com/photos/random'
-      const queryParam = `&client_id=${accessKey}`
-      const res = await fetch(`${endpoint}?count=20${queryParam}`)
-      const data = await res.json()
-
-      setImageList([...imageList, ...data])
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setScrollLoading(false)
-    }
-  }
-
-  const handleScroll = () => {
-    // 窗口高度 + 用户滚动的距离 >= 整个文档的高度，代表到底了
-    const scrollElement = scrollRef.current
-    if (
-      scrollElement.scrollTop + scrollElement.clientHeight >=
-      scrollElement.scrollHeight
-    ) {
-      getScrollRandomImage()
-    }
-  }
-
-  useEffect(() => {
-    const scrollElement = scrollRef.current
-    if (scrollElement) {
-      scrollElement.addEventListener('scroll', handleScroll)
-      return () => scrollElement.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
 
   return (
     <div className='flex flex-col bg-slate-500 h-screen'>
@@ -123,9 +77,8 @@ export default function LeftBoard() {
         </Navbar>
       </>
 
-      {/* <ScrollShadow> */}
+      <ScrollShadow>
       <div
-        ref={scrollRef}
         id='scroll-photo'
         className='flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap scrollbar-thin scrollbar-color-auto '>
         {imageList && imageList?.length == 0 ? (
@@ -156,7 +109,7 @@ export default function LeftBoard() {
           )
         )}
       </div>
-      {/* </ScrollShadow> */}
+      </ScrollShadow>
 
       <>
         <Navbar className='relative'>

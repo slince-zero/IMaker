@@ -91,7 +91,7 @@ export default function ImgContextProvider({
         ? `&query=${encodeURIComponent(searchText)}`
         : ''
       const res = await fetch(
-        `${endpoint}?per_page=30${queryParam}&client_id=${accessKey}`
+        `${endpoint}?per_page=30&page=${Math.floor(100 * Math.random())}${queryParam}&client_id=${accessKey}`
       )
       const data = await res.json()
 
