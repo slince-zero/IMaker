@@ -78,6 +78,9 @@ export default function ImgContextProvider({
   // 设置铅笔颜色
   const [board_pen_color, setBoardPenColor] = useState('#e23922')
 
+  // 是否开启截图选区
+  const [isOpenSelectArea, setIsOpenSelectArea] = useState(false)
+
   // 获取图片
   async function getImage(searchText: string = '') {
     try {
@@ -91,7 +94,9 @@ export default function ImgContextProvider({
         ? `&query=${encodeURIComponent(searchText)}`
         : ''
       const res = await fetch(
-        `${endpoint}?per_page=30&page=${Math.floor(100 * Math.random())}${queryParam}&client_id=${accessKey}`
+        `${endpoint}?per_page=30&page=${Math.floor(
+          100 * Math.random()
+        )}${queryParam}&client_id=${accessKey}`
       )
       const data = await res.json()
 
@@ -328,6 +333,8 @@ export default function ImgContextProvider({
         loadingAIImage,
         handleGenerateAIImage,
         handleSubmitAIImage,
+        isOpenSelectArea,
+        setIsOpenSelectArea,
       }}>
       {children}
     </ImgContext.Provider>

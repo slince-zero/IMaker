@@ -32,8 +32,8 @@ import {
   PenSizeLogo,
   PenColorLogo,
   WhiteBoardLogo,
+  SnipScreenShotLogo,
 } from './write-logo'
-import ScreenCapture from '../center/dragScreenShot'
 export default function RightBoard() {
   const {
     authorValue,
@@ -61,6 +61,8 @@ export default function RightBoard() {
     isCircle,
     handleIsCircle,
     setHexColor,
+    isOpenSelectArea,
+    setIsOpenSelectArea,
   } = useContext(ImgContext)
   const { handleDownloadImage } = useContext(ImageDownloadContext)
 
@@ -430,7 +432,13 @@ export default function RightBoard() {
               </Dropdown>
 
               {/* 截图选区 */}
-              <ScreenCapture/>
+              {/* isOpenSelectArea, setIsOpenSelectArea */}
+              <Button
+                isIconOnly
+                className={isOpenSelectArea !== false ? ' bg-gray-400' : ''}
+                onClick={() => setIsOpenSelectArea(!isOpenSelectArea)}>
+                <SnipScreenShotLogo />
+              </Button>
             </div>
           </CardBody>
         </Card>

@@ -3,6 +3,7 @@ import { ImgContext } from '@/context'
 import { ImageDownloadContext } from '@/context/imageDownload'
 import { Spinner } from '@nextui-org/react'
 import HandWriting from '@/page/right/hand-writing'
+import ScreenCapture from './dragScreenShot'
 export default function CenterBoard() {
   const {
     imgInfo,
@@ -40,7 +41,7 @@ export default function CenterBoard() {
   //     centerBoardElement.style.cursor = 'url(/rubber.svg),auto'
   //   }
   // }, [boardTool])
-console.log(proportionValue,'proportionValue');
+  console.log(proportionValue, 'proportionValue')
 
   return (
     <div
@@ -82,6 +83,17 @@ console.log(proportionValue,'proportionValue');
           )}
         </div>
       )}
+
+      <div
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          top: '0',
+          left: '0',
+        }}>
+        <ScreenCapture />
+      </div>
 
       <div
         style={{
