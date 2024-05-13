@@ -18,6 +18,7 @@ export default function CenterBoard() {
     opacityValue,
     proportionValue,
     isCircle,
+    isOpenSelectArea,
   } = useContext(ImgContext)
 
   const { imageContainerRef } = useContext(ImageDownloadContext)
@@ -91,6 +92,8 @@ export default function CenterBoard() {
           height: '100%',
           top: '0',
           left: '0',
+          zIndex: 2,
+          display: isOpenSelectArea ? 'block' : 'none',
         }}>
         <ScreenCapture />
       </div>
