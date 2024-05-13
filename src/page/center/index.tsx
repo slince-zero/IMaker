@@ -40,6 +40,7 @@ export default function CenterBoard() {
   //     centerBoardElement.style.cursor = 'url(/rubber.svg),auto'
   //   }
   // }, [boardTool])
+console.log(proportionValue,'proportionValue');
 
   return (
     <div

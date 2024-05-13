@@ -168,7 +168,9 @@ export default function RightBoard() {
       <>
         <Navbar>
           <NavbarBrand>
-            <span className='text-gray-350 font-bold text-inherit'>编辑</span>
+            <span className='text-gray-350 font-bold text-inherit mr-2'>
+              编辑
+            </span>
           </NavbarBrand>
 
           <NavbarContent justify='end'>
@@ -215,13 +217,6 @@ export default function RightBoard() {
                   {item.label}
                 </SelectItem>
               ))}
-            </SelectSection>
-            <SelectSection>
-              <SelectItem
-                key={'自定义'}
-                textValue={'自定义'}>
-                <ScreenCapture />
-              </SelectItem>
             </SelectSection>
           </Select>
 
@@ -433,6 +428,9 @@ export default function RightBoard() {
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
+
+              {/* 截图选区 */}
+              <ScreenCapture/>
             </div>
           </CardBody>
         </Card>
