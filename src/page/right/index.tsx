@@ -33,6 +33,7 @@ import {
   PenColorLogo,
   WhiteBoardLogo,
 } from './write-logo'
+import ScreenCapture from '../center/dragScreenShot'
 export default function RightBoard() {
   const {
     authorValue,
@@ -59,7 +60,7 @@ export default function RightBoard() {
     handleChangeBoardPenColor,
     isCircle,
     handleIsCircle,
-    setHexColor
+    setHexColor,
   } = useContext(ImgContext)
   const { handleDownloadImage } = useContext(ImageDownloadContext)
 
@@ -74,12 +75,11 @@ export default function RightBoard() {
   // 图片比例
   const img_aspect_x_list = [
     // 横屏
-    { label: '1 : 1', value: 'aspect-square', description: '900x900' },
+    { label: '1 : 1', value: 'aspect-square', description: '450x450' },
     { label: '2 : 1', value: 'aspect-[2/1]', description: '900x450' },
     { label: '3 : 2', value: 'aspect-[3/2]', description: '900x600' },
     { label: '4 : 3', value: 'aspect-[4/3]', description: '900x675' },
     { label: '16: 9', value: 'aspect-[16/9]', description: '1600x900' },
-    { label: '微信公众号', value: 'aspect-[900/383]', description: '900x383' },
   ]
 
   const img_aspect_y_list = [
@@ -216,6 +216,13 @@ export default function RightBoard() {
                 </SelectItem>
               ))}
             </SelectSection>
+            <SelectSection>
+              <SelectItem
+                key={'自定义'}
+                textValue={'自定义'}>
+                <ScreenCapture />
+              </SelectItem>
+            </SelectSection>
           </Select>
 
           <Select
@@ -239,7 +246,7 @@ export default function RightBoard() {
                 type='text'
                 label='遮罩'
                 value={hexColor}
-                onChange={(e)=>setHexColor(e.target.value)}
+                onChange={(e) => setHexColor(e.target.value)}
               />
             </div>
 
