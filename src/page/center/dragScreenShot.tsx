@@ -81,7 +81,7 @@ const ScreenCapture = () => {
             height: `${position.height}px`,
             width: `${position.width}px`,
             backgroundColor: 'blue',
-            opacity: 0.5,
+            opacity: 0.3,
             position: 'absolute',
             left: `${position.left}px`,
             top: `${position.top}px`,
