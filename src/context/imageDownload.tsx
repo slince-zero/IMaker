@@ -1,14 +1,23 @@
-import { ReactNode, createContext, useRef, MutableRefObject } from 'react'
+import {
+  ReactNode,
+  createContext,
+  useRef,
+  MutableRefObject,
+  useContext,
+} from 'react'
 import domtoimage from 'dom-to-image'
+import { ImgContext } from '.'
 // 首先定义Context的类型
 interface ImageDownloadContextProps {
   imageContainerRef: any // 适当地改变类型以匹配`useRef`的返回类型
+  newRef: any
   handleDownloadImage: (type: 'JPG' | 'PNG' | 'SVG') => void // 或者具有更详细类型的函数签名
 }
 
 // 使用断言来定义初始值，确保类型正确
 export const ImageDownloadContext = createContext<ImageDownloadContextProps>({
   imageContainerRef: {} as MutableRefObject<HTMLDivElement>, // 使用类型断言确保初始值类型正确
+  newRef: {} as MutableRefObject<HTMLDivElement>,
   handleDownloadImage: () => {}, // 提供一个noop(无操作)函数作为初始值
 })
 
@@ -17,10 +26,19 @@ export const ImageDownloadProvider = ({
 }: {
   children: ReactNode
 }) => {
+  const { isOpenSelectArea } = useContext(ImgContext)
+
   const imageContainerRef = useRef<HTMLDivElement>(null)
+  const newRef = useRef<HTMLDivElement>(null)
 
   async function handleDownloadImage(type: 'JPG' | 'PNG' | 'SVG') {
-    const node = imageContainerRef.current
+    // const node = imageContainerRef.current
+    let node
+    if (isOpenSelectArea) {
+      node = newRef.current
+    } else {
+      node = imageContainerRef.current
+    }
 
     if (node) {
       try {
@@ -67,7 +85,11 @@ export const ImageDownloadProvider = ({
 
   return (
     <ImageDownloadContext.Provider
-      value={{ imageContainerRef, handleDownloadImage }}>
+      value={{
+        imageContainerRef,
+        handleDownloadImage,
+        newRef,
+      }}>
       {children}
     </ImageDownloadContext.Provider>
   )

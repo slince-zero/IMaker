@@ -21,7 +21,7 @@ export default function CenterBoard() {
     isOpenSelectArea,
   } = useContext(ImgContext)
 
-  const { imageContainerRef } = useContext(ImageDownloadContext)
+  const { imageContainerRef, newRef } = useContext(ImageDownloadContext)
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -41,8 +41,6 @@ export default function CenterBoard() {
   //   } else if (boardTool === 'rubber') {
   //     centerBoardElement.style.cursor = 'url(/rubber.svg),auto'
   //   }
-  // }, [boardTool])
-  console.log(proportionValue, 'proportionValue')
 
   return (
     <div
@@ -86,6 +84,8 @@ export default function CenterBoard() {
       )}
 
       <div
+        ref={newRef}
+        className='screenCapture'
         style={{
           position: 'absolute',
           width: '100%',

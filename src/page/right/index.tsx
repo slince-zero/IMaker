@@ -432,7 +432,6 @@ export default function RightBoard() {
               </Dropdown>
 
               {/* 截图选区 */}
-              {/* isOpenSelectArea, setIsOpenSelectArea */}
               <Button
                 isIconOnly
                 className={isOpenSelectArea !== false ? ' bg-gray-400' : ''}
