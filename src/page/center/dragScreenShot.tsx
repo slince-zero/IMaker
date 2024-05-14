@@ -16,11 +16,14 @@ const ScreenCapture = () => {
 
   const onMouseDown = (e: any) => {
     setIsDragging(true)
+    // e.clientX, e.clientY 为鼠标相对于div左上角的坐标
     setPosition({
       ...position,
       x: e.clientX,
       y: e.clientY,
     })
+    document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('mouseup', onMouseUp)
   }
 
   const onMouseMove = (e: any) => {
@@ -35,14 +38,18 @@ const ScreenCapture = () => {
         y: e.clientY,
       })
     } else if (isResizing) {
-      const newWidth = e.clientX - position.left
-      const newHeight = e.clientY - position.top
+      const dx = e.clientX - position.x
+      const dy = e.clientY - position.y
+      const newWidth = position.width + dx
+      const newHeight = position.height + dy
       if (newWidth > 0 && newHeight > 0) {
-        setPosition({
-          ...position,
+        setPosition((pos) => ({
+          ...pos,
           width: newWidth,
           height: newHeight,
-        })
+          x: e.clientX,
+          y: e.clientY,
+        }))
       }
     }
   }
@@ -50,6 +57,8 @@ const ScreenCapture = () => {
   const onMouseUp = () => {
     setIsDragging(false)
     setIsResizing(false)
+    document.removeEventListener('mousemove', onMouseMove)
+    document.removeEventListener('mouseup', onMouseUp)
   }
 
   const onResizeMouseDown = (e: any) => {
@@ -72,6 +81,7 @@ const ScreenCapture = () => {
             height: `${position.height}px`,
             width: `${position.width}px`,
             backgroundColor: 'blue',
+            opacity: 0.5,
             position: 'absolute',
             left: `${position.left}px`,
             top: `${position.top}px`,
