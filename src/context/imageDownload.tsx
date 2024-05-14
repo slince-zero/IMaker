@@ -39,6 +39,7 @@ export const ImageDownloadProvider = ({
     } else {
       node = imageContainerRef.current
     }
+    console.log(node, 'nnnnn')
 
     if (node) {
       try {

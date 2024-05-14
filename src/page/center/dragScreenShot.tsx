@@ -88,7 +88,7 @@ const ScreenCapture = () => {
             cursor: isDragging ? 'grabbing' : 'grab',
           }}
           onMouseDown={onMouseDown}>
-          拖拽截图
+          下载选中区域
           <div
             style={{
               position: 'absolute',
