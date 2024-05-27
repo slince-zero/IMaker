@@ -115,8 +115,7 @@ export default function ImgContextProvider({
   }
 
   useEffect(() => {
-    // 先关掉
-    // getImage()
+    getImage()
   }, [])
 
   // 按下回车事件
