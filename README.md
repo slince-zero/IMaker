@@ -39,6 +39,16 @@ Open http://localhost:5173 to see the effect.
 
 - Generate image by AI 🔥
 
+## Contributing
+
+If you have any suggestions or feedback, please feel free to contribute to the project.
+
+1. Fork the repository
+2. Create a new branch (e.g. `feature/new-feature`)
+3. Make your changes and commit them (e.g. `git commit -m "Add new feature"`)
+4. Push to the branch (e.g. `git push origin feature/new-feature`)
+5. Create a pull request
+
 ## License
 
 GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
