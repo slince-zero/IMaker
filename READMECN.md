@@ -42,6 +42,16 @@ https://github.com/gezhaoyou/picprose
 
 - 通过 AI 生成图片 🔥
 
+## 贡献
+
+如果你有任何建议或反馈，请随时贡献。
+
+1. FORK 仓库
+2. 创建一个新的分支 (e.g. `feature/new-feature`)
+3. 做出你的改变并提交 (e.g. `git commit -m "Add new feature"`)
+4. 推送到分支 (e.g. `git push origin feature/new-feature`)
+5. 创建一个 pull request
+
 ## 协议
 
 GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
