@@ -5,7 +5,7 @@ import RightBoard from '@/page/right'
 import { ImageDownloadProvider } from '@/context/imageDownload'
 export default function Main() {
   return (
-    <div className='conatainer flex h-screen overflow-x-hidden'>
+    <div className='container flex h-screen overflow-x-hidden'>
       <div className='left min-w-80 max-w-80'>
         <LeftBoard />
       </div>
