@@ -5,32 +5,54 @@
 
 ## 介绍
 
-Imkaer 是一款用来设计封面的工具，比如你可以为你的博客、视频、公众号等设计你自己喜欢的封面。
+IMaker 是一款封面设计工具，可以为博客、视频、公众号等设计封面，支持桌面端和移动端布局。
 
 ## 预览
 
-![intro](/public/intro.png)
+### 桌面端
+
+三栏布局：左侧图库，中间画布随窗口自动缩放，右侧编辑面板。
+
+![IMaker 桌面端](/docs/screenshots/desktop.jpg)
+
+### 移动端
+
+画布固定在顶部，下方通过「图库 / 画布 / 文字 / 画板」页签切换，编辑时随时能看到效果；涂鸦和导出选区都支持触屏。
+
+<p align="center">
+  <img src="/docs/screenshots/mobile.jpg" alt="IMaker 移动端" width="320">
+</p>
+
+## 功能
+
+- 搜索 Unsplash 图片、上传本地图片，或用 AI 生成图片
+- 横屏 / 竖屏多种比例，圆角或直角，可调透明度的颜色遮罩
+- 标题文案支持切换字体和字号，作者水印支持 5 个位置
+- 画笔 / 橡皮手写涂鸦，支持撤销（⌘ / Ctrl + Z）和清空
+- 导出 PNG / JPG / SVG，也可以只导出选中的区域
+- 适配桌面端和移动端
 
 ## 部署
 
-🌟 第一步：创建一个`.env.local`文件，更改 `.env.local` 中的 `VITE_PUBLIC_UNSPLASH_API_KEY`
+使用 Node.js 26（参见 `.nvmrc`），克隆项目并安装依赖：
+
+```bash
+git clone https://github.com/slince-zero/IMaker.git
+cd IMaker
+npm ci
+```
+
+创建 `.env.local` 文件并添加 API 密钥：
 
     VITE_PUBLIC_UNSPLASH_API_KEY = your_unsplash_api_key
 
 [https://unsplash.com/documentation](https://unsplash.com/documentation)
 
-💥 第二步：更改 `.env.local` 中的 `VITE_PUBLIC_HUGGINGFACE_API_KEY`
-
     VITE_PUBLIC_HUGGINGFACE_API_KEY = your_huggingface_api_key
 
 [https://huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
 
-🌈 第三步：克隆项目
-
-    git clone git@github.com:slince-zero/IMaker.git
-    cd img-maker
-    npm i
-    npm run dev
+运行 `npm run dev` 启动开发服务器。
 
 打开 http://localhost:5173 查看效果
 
