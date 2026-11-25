@@ -14,7 +14,13 @@ import {
   Textarea,
 } from '@nextui-org/react'
 import { ReactNode, useContext } from 'react'
-import { BoardTool, ImgContext } from '@/context'
+import {
+  BoardTool,
+  DEFAULT_IMAGE_POSITION,
+  ImgContext,
+  TitleAlign,
+  TitleVertical,
+} from '@/context'
 import { DownloadType, ImageDownloadContext } from '@/context/imageDownload'
 import {
   ASPECT_LANDSCAPE,
@@ -28,8 +34,15 @@ import {
 } from '@/config/options'
 import { PenLogo, RubberLogo } from './write-logo'
 import {
+  AlignBottomIcon,
+  AlignCenterIcon,
+  AlignLeftIcon,
+  AlignMiddleIcon,
+  AlignRightIcon,
+  AlignTopIcon,
   DownloadIcon,
   HandIcon,
+  RefreshIcon,
   TrashIcon,
   UndoIcon,
 } from '@/components/icons'
@@ -148,6 +161,20 @@ function ColorSwatches({
   )
 }
 
+// 标题位置 & 对齐选项（#4）
+const TITLE_VERTICAL: { key: TitleVertical; label: string; icon: JSX.Element }[] =
+  [
+    { key: 'top', label: '顶部', icon: <AlignTopIcon size={15} /> },
+    { key: 'middle', label: '居中', icon: <AlignMiddleIcon size={15} /> },
+    { key: 'bottom', label: '底部', icon: <AlignBottomIcon size={15} /> },
+  ]
+
+const TITLE_ALIGN: { key: TitleAlign; label: string; icon: JSX.Element }[] = [
+  { key: 'left', label: '左对齐', icon: <AlignLeftIcon size={15} /> },
+  { key: 'center', label: '居中', icon: <AlignCenterIcon size={15} /> },
+  { key: 'right', label: '右对齐', icon: <AlignRightIcon size={15} /> },
+]
+
 /* ---------------- 各个编辑区 ---------------- */
 
 export function CanvasSection() {
@@ -160,7 +187,14 @@ export function CanvasSection() {
     setHexColor,
     opacityValue,
     setOpacityValue,
+    imagePosition,
+    setImagePosition,
+    resetImagePosition,
   } = useContext(ImgContext)
+
+  const isDefaultPosition =
+    imagePosition.x === DEFAULT_IMAGE_POSITION.x &&
+    imagePosition.y === DEFAULT_IMAGE_POSITION.y
 
   return (
     <>
@@ -208,6 +242,48 @@ export function CanvasSection() {
         </Field>
       </Section>
 
+      <Section
+        title='背景图位置'
+        extra={
+          <Button
+            size='sm'
+            variant='light'
+            className='h-6 min-w-0 px-2 text-[11px] text-zinc-300'
+            isDisabled={isDefaultPosition}
+            startContent={<RefreshIcon size={13} />}
+            onPress={resetImagePosition}>
+            复位
+          </Button>
+        }>
+        <p className='text-[11px] text-zinc-500'>
+          换比例后图片会被裁剪，可以直接在画布上拖动图片选择保留的区域，也可以用下面的滑块微调
+        </p>
+        <Slider
+          size='sm'
+          label='水平'
+          step={1}
+          minValue={0}
+          maxValue={100}
+          value={imagePosition.x}
+          onChange={(v) =>
+            setImagePosition((p) => ({ ...p, x: toNumber(v) }))
+          }
+          getValue={(v) => `${Math.round(toNumber(v))}%`}
+        />
+        <Slider
+          size='sm'
+          label='垂直'
+          step={1}
+          minValue={0}
+          maxValue={100}
+          value={imagePosition.y}
+          onChange={(v) =>
+            setImagePosition((p) => ({ ...p, y: toNumber(v) }))
+          }
+          getValue={(v) => `${Math.round(toNumber(v))}%`}
+        />
+      </Section>
+
       <Section title='遮罩'>
         <ColorSwatches
           colors={MASK_COLORS}
@@ -245,6 +321,10 @@ export function TextSection() {
   const {
     titleValue,
     setTitleValue,
+    titleVertical,
+    setTitleVertical,
+    titleAlign,
+    setTitleAlign,
     fontValue,
     handleChangeFont,
     fontSizeValue,
@@ -268,6 +348,52 @@ export function TextSection() {
           value={titleValue}
           onValueChange={setTitleValue}
         />
+        <div className='grid grid-cols-2 gap-2'>
+          <Field label='位置'>
+            <Tabs
+              size='sm'
+              fullWidth
+              aria-label='标题位置'
+              selectedKey={titleVertical}
+              onSelectionChange={(k) => setTitleVertical(k as TitleVertical)}>
+              {TITLE_VERTICAL.map((t) => (
+                <Tab
+                  key={t.key}
+                  title={
+                    <span
+                      title={t.label}
+                      aria-label={t.label}
+                      className='flex items-center'>
+                      {t.icon}
+                    </span>
+                  }
+                />
+              ))}
+            </Tabs>
+          </Field>
+          <Field label='对齐'>
+            <Tabs
+              size='sm'
+              fullWidth
+              aria-label='标题对齐'
+              selectedKey={titleAlign}
+              onSelectionChange={(k) => setTitleAlign(k as TitleAlign)}>
+              {TITLE_ALIGN.map((t) => (
+                <Tab
+                  key={t.key}
+                  title={
+                    <span
+                      title={t.label}
+                      aria-label={t.label}
+                      className='flex items-center'>
+                      {t.icon}
+                    </span>
+                  }
+                />
+              ))}
+            </Tabs>
+          </Field>
+        </div>
         <Select
           size='sm'
           label='字体'

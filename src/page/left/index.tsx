@@ -24,6 +24,7 @@ export default function LeftBoard({ columns = 2 }: { columns?: 2 | 3 }) {
     imageList,
     searchValue,
     setSearchValue,
+    listKeyword,
     isLoading,
     getImage,
     onSearchKeyDown,
@@ -145,7 +146,8 @@ export default function LeftBoard({ columns = 2 }: { columns?: 2 | 3 }) {
                   type='button'
                   title={item.alt_description ?? ''}
                   onClick={() => {
-                    setImgInfo(item)
+                    // 记下搜索关键词，下载时用作文件名
+                    setImgInfo({ ...item, keyword: listKeyword })
                     setIsUpload(false)
                   }}
                   style={{ backgroundColor: item.color }}

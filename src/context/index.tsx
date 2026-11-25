@@ -38,7 +38,21 @@ export interface CanvasImage {
   id?: string
   urls?: { regular?: string; small?: string }
   alt_description?: string | null
+  // 用于下载文件名：搜索关键词 / 上传的文件名 / AI 描述
+  keyword?: string
 }
+
+// 标题位置（#4）
+export type TitleVertical = 'top' | 'middle' | 'bottom'
+export type TitleAlign = 'left' | 'center' | 'right'
+
+// 背景图显示位置，百分比，对应 object-position（#2）
+export interface ImagePosition {
+  x: number
+  y: number
+}
+
+export const DEFAULT_IMAGE_POSITION: ImagePosition = { x: 50, y: 50 }
 
 export interface AuthorPositionStyle {
   position?: 'absolute'
@@ -62,6 +76,8 @@ export interface ImgContextValue {
   imageList: ImageItem[]
   searchValue: string
   setSearchValue: Setter<string>
+  // 当前图库列表对应的搜索关键词
+  listKeyword: string
   isLoading: boolean
   getImage: (searchText?: string) => Promise<void>
   onSearchKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void
@@ -91,9 +107,16 @@ export interface ImgContextValue {
   handleChangeCompleteColor: (color: { hex: string }) => void
   opacityValue: number
   setOpacityValue: Setter<number>
+  imagePosition: ImagePosition
+  setImagePosition: Setter<ImagePosition>
+  resetImagePosition: () => void
   // 文字
   titleValue: string
   setTitleValue: Setter<string>
+  titleVertical: TitleVertical
+  setTitleVertical: Setter<TitleVertical>
+  titleAlign: TitleAlign
+  setTitleAlign: Setter<TitleAlign>
   fontValue: string
   setFontValue: Setter<string>
   handleChangeFont: (value: string) => void
@@ -169,6 +192,7 @@ export default function ImgContextProvider({
 }) {
   const [imageList, setImageList] = useState<ImageItem[]>([])
   const [searchValue, setSearchValue] = useState('')
+  const [listKeyword, setListKeyword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   // 当前选中的图库图片
   const [imgInfo, setImgInfo] = useState<CanvasImage>({})
@@ -189,9 +213,14 @@ export default function ImgContextProvider({
   const [isCircle, setIsCircle] = useState(true)
   const [hexColor, setHexColor] = useState('#3F51B5')
   const [opacityValue, setOpacityValue] = useState(0.15)
+  const [imagePosition, setImagePosition] = useState<ImagePosition>(
+    DEFAULT_IMAGE_POSITION
+  )
 
   // 文字
   const [titleValue, setTitleValue] = useState('花开花落，你陪了我多少年')
+  const [titleVertical, setTitleVertical] = useState<TitleVertical>('middle')
+  const [titleAlign, setTitleAlign] = useState<TitleAlign>('center')
   const [fontValue, setFontValue] = useState('font-dingtalk')
   const [fontSizeValue, setFontSizeValue] = useState(32)
   const [authorValue, setAuthorValue] = useState('@IMaker')
@@ -234,9 +263,12 @@ export default function ImgContextProvider({
         ? data.results
         : []
       setImageList(list)
+      setListKeyword(keyword)
       // 首次进入时自动选中第一张，画布不再是空的
       if (list.length > 0) {
-        setImgInfo((prev) => (prev?.urls?.regular ? prev : list[0]))
+        setImgInfo((prev) =>
+          prev?.urls?.regular ? prev : { ...list[0], keyword }
+        )
       }
     } catch (e) {
       console.error(e)
@@ -285,7 +317,11 @@ export default function ImgContextProvider({
           URL.revokeObjectURL(uploadCurrentImage.urls.regular)
         }
         const newImageUrl = URL.createObjectURL(file)
-        setUploadCurrentImage({ urls: { regular: newImageUrl } })
+        setUploadCurrentImage({
+          urls: { regular: newImageUrl },
+          // 去掉扩展名，作为下载文件名的关键词
+          keyword: file.name.replace(/\.[^.]+$/, ''),
+        })
         setIsUpload(true)
       }
     } catch (e) {
@@ -323,6 +359,10 @@ export default function ImgContextProvider({
 
   function handleChangeBoardPenColor(color: { hex: string }) {
     setBoardPenColor(color.hex.toUpperCase())
+  }
+
+  function resetImagePosition() {
+    setImagePosition(DEFAULT_IMAGE_POSITION)
   }
 
   function undoLine() {
@@ -376,7 +416,10 @@ export default function ImgContextProvider({
   // 把 AI 图片放到画布上
   function handleSubmitAIImage() {
     if (!aiResult) return
-    setImgInfo({ urls: { regular: aiResult, small: aiResult } })
+    setImgInfo({
+      urls: { regular: aiResult, small: aiResult },
+      keyword: aiValue.trim(),
+    })
     setIsUpload(false)
   }
 
@@ -389,6 +432,7 @@ export default function ImgContextProvider({
         imageList,
         searchValue,
         setSearchValue,
+        listKeyword,
         isLoading,
         getImage,
         onSearchKeyDown,
@@ -416,8 +460,15 @@ export default function ImgContextProvider({
         handleChangeCompleteColor,
         opacityValue,
         setOpacityValue,
+        imagePosition,
+        setImagePosition,
+        resetImagePosition,
         titleValue,
         setTitleValue,
+        titleVertical,
+        setTitleVertical,
+        titleAlign,
+        setTitleAlign,
         fontValue,
         setFontValue,
         handleChangeFont,

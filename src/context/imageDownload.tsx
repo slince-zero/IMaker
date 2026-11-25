@@ -30,14 +30,34 @@ const SCALE = 2
 const exportFilter = (node: Node) =>
   !(node instanceof HTMLElement && node.dataset.exportIgnore === 'true')
 
-function generateImageName(prefix: string, type: DownloadType) {
+// 把关键词处理成可用于文件名的片段：去掉非法字符、空格换成 -、限制长度
+export function toFileNamePart(text = '') {
+  return text
+    .trim()
+    .replace(/[\\/:*?"<>|\s]+/g, '-')
+    .replace(/[^\p{L}\p{N}_-]/gu, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 40)
+}
+
+// 文件名：IMAKER-关键词-日期-时间.后缀，没有关键词时省略（#2）
+export function generateImageName(
+  prefix: string,
+  type: DownloadType,
+  keyword = ''
+) {
   const now = new Date()
   const pad = (n: number) => String(n).padStart(2, '0')
-  return `${prefix}-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(
+  const date = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(
     now.getDate()
-  )}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(
+  )}`
+  const time = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(
     now.getSeconds()
-  )}.${type.toLowerCase()}`
+  )}`
+  const part = toFileNamePart(keyword)
+  return [prefix, part, date, time].filter(Boolean).join('-') +
+    `.${type.toLowerCase()}`
 }
 
 function loadImage(src: string) {
@@ -81,7 +101,8 @@ export const ImageDownloadProvider = ({
 }: {
   children: ReactNode
 }) => {
-  const { isOpenSelectArea, selectArea } = useContext(ImgContext)
+  const { isOpenSelectArea, selectArea, isUpload, uploadCurrentImage, imgInfo } =
+    useContext(ImgContext)
   const imageContainerRef = useRef<HTMLDivElement>(null)
   const [isDownloading, setIsDownloading] = useState(false)
 
@@ -110,7 +131,8 @@ export const ImageDownloadProvider = ({
       const blob = await (await fetch(dataUrl)).blob()
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
-      link.download = generateImageName('IMAKER', type)
+      const current = isUpload ? uploadCurrentImage : imgInfo
+      link.download = generateImageName('IMAKER', type, current?.keyword)
       link.href = url
       document.body.appendChild(link)
       link.click()

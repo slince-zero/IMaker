@@ -31,9 +31,10 @@ The canvas stays pinned at the top while you switch between the Gallery / Canvas
 
 - Search Unsplash images, upload local images, or generate images with AI
 - Landscape and portrait aspect ratios, rounded or square corners, color overlay with adjustable opacity
-- Title text with custom fonts and font size, plus an author watermark in 5 positions
+- Title text with custom fonts and font size, placed at the top / middle / bottom and aligned left / center / right, plus an author watermark in 5 positions
+- Drag the background image (or use the sliders) to choose which part stays visible after cropping to a new aspect ratio
 - Freehand drawing with pen and eraser, undo (⌘ / Ctrl + Z) and clear
-- Export as PNG / JPG / SVG, or export only a selected area
+- Export as PNG / JPG / SVG, or export only a selected area; file names include the search keyword, e.g. `IMAKER-mountain-20261125-111900.png`
 - Responsive layout for desktop and mobile
 
 ## Deployment

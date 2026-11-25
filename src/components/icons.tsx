@@ -100,6 +100,45 @@ export const HandIcon = (p: IconProps) => (
   </Base>
 )
 
+export const AlignLeftIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d='M4 6h16M4 10h10M4 14h16M4 18h10' />
+  </Base>
+)
+
+export const AlignCenterIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d='M4 6h16M7 10h10M4 14h16M7 18h10' />
+  </Base>
+)
+
+export const AlignRightIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d='M4 6h16M10 10h10M4 14h16M10 18h10' />
+  </Base>
+)
+
+export const AlignTopIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d='M4 4h16' />
+    <rect x='8' y='7' width='8' height='6' rx='1' />
+  </Base>
+)
+
+export const AlignMiddleIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d='M4 12h3M17 12h3' />
+    <rect x='8' y='9' width='8' height='6' rx='1' />
+  </Base>
+)
+
+export const AlignBottomIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d='M4 20h16' />
+    <rect x='8' y='11' width='8' height='6' rx='1' />
+  </Base>
+)
+
 export const GithubIcon = ({ size = 18 }: { size?: number }) => (
   <svg
     width={size}
