@@ -1,493 +1,556 @@
 import {
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Input,
-  Link,
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
   Select,
   SelectItem,
   Slider,
-  Textarea,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Tabs,
+  Switch,
   Tab,
-  Divider,
-  SelectSection,
-  Card,
-  CardBody,
-  CardHeader,
+  Tabs,
+  Textarea,
 } from '@nextui-org/react'
-import { useContext } from 'react'
-import { ImgContext } from '@/context'
-import { CirclePicker } from 'react-color'
-import { ImageDownloadContext } from '@/context/imageDownload'
+import { ReactNode, useContext } from 'react'
+import { BoardTool, ImgContext } from '@/context'
+import { DownloadType, ImageDownloadContext } from '@/context/imageDownload'
 import {
-  PenLogo,
-  RubberLogo,
-  PenSizeLogo,
-  PenColorLogo,
-  WhiteBoardLogo,
-  SnipScreenShotLogo,
-} from './write-logo'
-export default function RightBoard() {
+  ASPECT_LANDSCAPE,
+  ASPECT_PORTRAIT,
+  AspectOption,
+  FONT_LIST,
+  MASK_COLORS,
+  PEN_COLORS,
+  PEN_SIZES,
+  isValidHex,
+} from '@/config/options'
+import { PenLogo, RubberLogo } from './write-logo'
+import {
+  DownloadIcon,
+  HandIcon,
+  TrashIcon,
+  UndoIcon,
+} from '@/components/icons'
+
+type SliderValue = number | number[]
+
+const toNumber = (v: SliderValue) => (Array.isArray(v) ? v[0] : v)
+
+/* ---------------- 通用小组件 ---------------- */
+
+function Section({
+  title,
+  extra,
+  children,
+}: {
+  title: string
+  extra?: ReactNode
+  children: ReactNode
+}) {
+  return (
+    <section className='space-y-3 rounded-xl border border-white/5 bg-white/[0.03] p-3'>
+      <header className='flex items-center justify-between'>
+        <h3 className='text-xs font-semibold tracking-wide text-zinc-300'>
+          {title}
+        </h3>
+        {extra}
+      </header>
+      {children}
+    </section>
+  )
+}
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className='space-y-1.5'>
+      <div className='text-[11px] text-zinc-500'>{label}</div>
+      {children}
+    </div>
+  )
+}
+
+function RatioButton({
+  option,
+  active,
+  onClick,
+}: {
+  option: AspectOption
+  active: boolean
+  onClick: () => void
+}) {
+  const base = 20
+  const box =
+    option.ratio >= 1
+      ? { width: base, height: base / option.ratio }
+      : { width: base * option.ratio, height: base }
+  return (
+    <button
+      type='button'
+      onClick={onClick}
+      aria-pressed={active}
+      className={`flex flex-col items-center justify-center gap-1.5 rounded-lg border py-2 text-[11px] transition ${
+        active
+          ? 'border-primary bg-primary/15 text-white'
+          : 'border-white/10 bg-white/[0.03] text-zinc-400 hover:border-white/25 hover:text-zinc-200'
+      }`}>
+      <span
+        className='block rounded-[3px] border border-current'
+        style={box}
+      />
+      {option.label}
+    </button>
+  )
+}
+
+function ColorSwatches({
+  colors,
+  value,
+  onChange,
+}: {
+  colors: string[]
+  value: string
+  onChange: (color: string) => void
+}) {
+  return (
+    <div className='flex flex-wrap gap-2'>
+      {colors.map((c) => {
+        const active = value.toUpperCase() === c.toUpperCase()
+        return (
+          <button
+            key={c}
+            type='button'
+            aria-label={c}
+            onClick={() => onChange(c)}
+            className={`h-7 w-7 rounded-full border border-white/20 transition hover:scale-110 ${
+              active ? 'ring-2 ring-white ring-offset-2 ring-offset-zinc-900' : ''
+            }`}
+            style={{ backgroundColor: c }}
+          />
+        )
+      })}
+      <label
+        title='自定义颜色'
+        className='relative h-7 w-7 cursor-pointer overflow-hidden rounded-full border border-white/20 transition hover:scale-110'
+        style={{
+          background:
+            'conic-gradient(#f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00)',
+        }}>
+        <input
+          type='color'
+          value={isValidHex(value) ? value : '#000000'}
+          onChange={(e) => onChange(e.target.value.toUpperCase())}
+          className='absolute inset-0 h-full w-full cursor-pointer opacity-0'
+        />
+      </label>
+    </div>
+  )
+}
+
+/* ---------------- 各个编辑区 ---------------- */
+
+export function CanvasSection() {
   const {
-    authorValue,
-    setAuthorValue,
+    proportionValue,
+    setProportionValue,
+    isCircle,
+    setIsCircle,
+    hexColor,
+    setHexColor,
+    opacityValue,
+    setOpacityValue,
+  } = useContext(ImgContext)
+
+  return (
+    <>
+      <Section title='画布'>
+        <Field label='横屏'>
+          <div className='grid grid-cols-5 gap-1.5'>
+            {ASPECT_LANDSCAPE.map((a) => (
+              <RatioButton
+                key={a.value}
+                option={a}
+                active={proportionValue === a.value}
+                onClick={() => setProportionValue(a.value)}
+              />
+            ))}
+          </div>
+        </Field>
+        <Field label='竖屏'>
+          <div className='grid grid-cols-5 gap-1.5'>
+            {ASPECT_PORTRAIT.map((a) => (
+              <RatioButton
+                key={a.value}
+                option={a}
+                active={proportionValue === a.value}
+                onClick={() => setProportionValue(a.value)}
+              />
+            ))}
+          </div>
+        </Field>
+        <Field label='边角'>
+          <Tabs
+            size='sm'
+            fullWidth
+            aria-label='边角'
+            selectedKey={isCircle ? 'circle' : 'square'}
+            onSelectionChange={(k) => setIsCircle(k === 'circle')}>
+            <Tab
+              key='circle'
+              title='圆角'
+            />
+            <Tab
+              key='square'
+              title='直角'
+            />
+          </Tabs>
+        </Field>
+      </Section>
+
+      <Section title='遮罩'>
+        <ColorSwatches
+          colors={MASK_COLORS}
+          value={hexColor}
+          onChange={setHexColor}
+        />
+        <Input
+          size='sm'
+          aria-label='遮罩颜色'
+          value={hexColor}
+          onValueChange={(v) => setHexColor(v.toUpperCase())}
+          startContent={
+            <span
+              className='h-4 w-4 shrink-0 rounded-full border border-white/20'
+              style={{ backgroundColor: hexColor }}
+            />
+          }
+        />
+        <Slider
+          size='sm'
+          label='不透明度'
+          step={0.01}
+          minValue={0}
+          maxValue={1}
+          value={opacityValue}
+          onChange={(v) => setOpacityValue(toNumber(v))}
+          getValue={(v) => `${Math.round(toNumber(v) * 100)}%`}
+        />
+      </Section>
+    </>
+  )
+}
+
+export function TextSection() {
+  const {
     titleValue,
     setTitleValue,
     fontValue,
-    fontSizeValue,
     handleChangeFont,
-    handleChangeFontSize,
-    handleAuthorPosition,
+    fontSizeValue,
+    setFontSizeValue,
+    authorValue,
+    setAuthorValue,
+    authorPositionId,
     authorPositionList,
-    handleChangeCompleteColor,
-    hexColor,
-    opacityValue,
-    setOpacityValue,
-    proportionValue,
-    handleProportionValue,
-    boardTool,
-    setBoardTool,
-    penSize,
-    handlePenSize,
-    board_pen_color,
-    handleChangeBoardPenColor,
-    isCircle,
-    handleIsCircle,
-    setHexColor,
-    isOpenSelectArea,
-    setIsOpenSelectArea,
+    handleAuthorPosition,
   } = useContext(ImgContext)
-  const { handleDownloadImage } = useContext(ImageDownloadContext)
-
-  // button 样式
-  const buttonStyle = {
-    fontSize: '20px',
-    backgroundColor: hexColor,
-    borderWidth: '2px',
-    borderColor: '#586980',
-  }
-
-  // 图片比例
-  const img_aspect_x_list = [
-    // 横屏
-    { label: '1 : 1', value: 'aspect-square', description: '450x450' },
-    { label: '2 : 1', value: 'aspect-[2/1]', description: '900x450' },
-    { label: '3 : 2', value: 'aspect-[3/2]', description: '900x600' },
-    { label: '4 : 3', value: 'aspect-[4/3]', description: '900x675' },
-    { label: '16: 9', value: 'aspect-[16/9]', description: '1600x900' },
-  ]
-
-  const img_aspect_y_list = [
-    //  竖屏
-    { label: '1:2', value: 'aspect-[1/2]', description: '900x450' },
-    { label: '2:3', value: 'aspect-[2/3]', description: '900x450' },
-    { label: '3:4', value: 'aspect-[3/4]', description: '900x450' },
-    { label: '9:16', value: 'aspect-[9/16]', description: '900x450' },
-  ]
-
-  // 字体合集
-  const font_list = [
-    {
-      label: 'Font-DingTalk',
-      value: 'font-dingtalk',
-    },
-    {
-      label: 'Font-Alibaba',
-      value: 'font-alibaba',
-    },
-
-    {
-      label: 'Font-KingSoft',
-      value: 'font-kingsoft',
-    },
-    {
-      label: 'Font-XinYiGuanHei',
-      value: 'font-xinyiguanhei',
-    },
-  ]
-
-  // 字体大小
-  const font_size = [
-    {
-      label: '12',
-      value: '12px',
-    },
-    {
-      label: '16',
-      value: '16px',
-    },
-    {
-      label: '20',
-      value: '20px',
-    },
-    {
-      label: '24',
-      value: '24px',
-    },
-    {
-      label: '28',
-      value: '28px',
-    },
-    {
-      label: '32',
-      value: '32px',
-    },
-  ]
-
-  // 手写板画笔大小
-  const board_pen_size = [
-    {
-      label: '1',
-      value: '1',
-    },
-    {
-      label: '2',
-      value: '2',
-    },
-    {
-      label: '3',
-      value: '3',
-    },
-    {
-      label: '4',
-      value: '4',
-    },
-    {
-      label: '5',
-      value: '5',
-    },
-  ]
 
   return (
-    <div className='flex flex-col bg-slate-500 h-screen'>
-      <>
-        <Navbar>
-          <NavbarBrand>
-            <span className='text-gray-350 font-bold text-inherit mr-2'>
-              编辑
-            </span>
-          </NavbarBrand>
-
-          <NavbarContent justify='end'>
-            <NavbarItem>
-              <Button
-                as={Link}
-                color='primary'
-                variant='flat'
-                target='_blank'
-                href='https://github.com/slince-zero/img-maker'>
-                GitHub
-              </Button>
-            </NavbarItem>
-          </NavbarContent>
-        </Navbar>
-      </>
-
-      <div className='flex-grow overflow-y-scroll overflow-x-hidden justify-center flex flex-wrap p-2'>
-        {/* 比例，控制图片大小 */}
-        <div className='flex flex-row w-full items-center'>
-          <Select
-            label='比例'
-            defaultSelectedKeys={[proportionValue]}
-            onChange={handleProportionValue}
-            className='max-w-xs py-2'>
-            <SelectSection
-              showDivider
-              title='横屏'>
-              {img_aspect_x_list.map((item) => (
-                <SelectItem
-                  key={item.value}
-                  value={item.value}>
-                  {item.label}
-                </SelectItem>
-              ))}
-            </SelectSection>
-            <SelectSection
-              showDivider
-              title='竖屏'>
-              {img_aspect_y_list.map((item) => (
-                <SelectItem
-                  key={item.value}
-                  value={item.value}>
-                  {item.label}
-                </SelectItem>
-              ))}
-            </SelectSection>
-          </Select>
-
-          <Select
-            label='形状'
-            defaultSelectedKeys={[isCircle ? 'circle' : 'square']}
-            onChange={handleIsCircle}
-            className='max-w-xs ml-2 py-2'>
-            <SelectSection>
-              <SelectItem key='circle'>圆角</SelectItem>
-              <SelectItem key='square'>方形</SelectItem>
-            </SelectSection>
-          </Select>
-        </div>
-        <Divider />
-
-        {/* 遮罩+颜色选择 */}
-        <div className='w-full flex flex-col py-2'>
-          <div className='flex w-full items-center justify-between '>
-            <div className='w-4/5'>
-              <Input
-                type='text'
-                label='遮罩'
-                value={hexColor}
-                onChange={(e) => setHexColor(e.target.value)}
-              />
-            </div>
-
-            <div className='mx-2'>
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button
-                    size='lg'
-                    isIconOnly
-                    style={buttonStyle}
-                    variant='bordered'></Button>
-                </DropdownTrigger>
-                <DropdownMenu
-                  aria-label='Static Actions'
-                  variant='flat'
-                  disallowEmptySelection
-                  selectionMode='single'>
-                  <DropdownItem textValue='color'>
-                    <div className='m-2'>
-                      <CirclePicker
-                        colors={[
-                          '#1f2937',
-                          '#e91e63',
-                          '#9c27b0',
-                          '#673ab7',
-                          '#3f51b5',
-                          '#2196f3',
-                          '#03a9f4',
-                          '#00bcd4',
-                          '#009688',
-                          '#4caf50',
-                          '#8bc34a',
-                          '#cddc39',
-                        ]}
-                        onChangeComplete={handleChangeCompleteColor}
-                      />
-                    </div>
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </div>
-          </div>
-          <Slider
-            color='foreground'
-            label='透明度'
-            step={0.01}
-            maxValue={1}
-            minValue={0}
-            defaultValue={opacityValue}
-            onChange={setOpacityValue}
-            className='max-w-md mt-5'
-          />
-        </div>
-        <Divider />
-
-        <div className='flex w-full items-center justify-between py-2'>
-          <Select
-            label='字体'
-            onChange={handleChangeFont}
-            defaultSelectedKeys={[fontValue]}
-            className='w-full my-2 mr-2'>
-            {font_list.map((item) => (
-              <SelectItem
-                key={item.value}
-                value={item.value}>
-                {item.label}
-              </SelectItem>
-            ))}
-          </Select>
-          <Dropdown>
-            <DropdownTrigger>
-              <Button>{fontSizeValue === '' ? '大小' : fontSizeValue}</Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              aria-label='Select a fontSize'
-              disallowEmptySelection
-              selectionMode='single'
-              onAction={handleChangeFontSize}>
-              {font_size.map((item) => (
-                <DropdownItem
-                  value={item.value}
-                  key={item.value}>
-                  {item.label}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-
+    <>
+      <Section title='文字'>
         <Textarea
-          label='标题&文案'
-          placeholder='输入内容'
+          size='sm'
+          label='标题 & 文案'
+          placeholder='输入内容，支持换行'
+          minRows={2}
+          maxRows={5}
           value={titleValue}
           onValueChange={setTitleValue}
-          className='py-2'
         />
+        <Select
+          size='sm'
+          label='字体'
+          disallowEmptySelection
+          selectedKeys={[fontValue]}
+          onChange={(e) => handleChangeFont(e.target.value)}>
+          {FONT_LIST.map((f) => (
+            <SelectItem
+              key={f.value}
+              textValue={f.label}>
+              <span style={{ fontFamily: f.value }}>{f.label}</span>
+            </SelectItem>
+          ))}
+        </Select>
+        <Slider
+          size='sm'
+          label='字号'
+          step={1}
+          minValue={12}
+          maxValue={96}
+          value={fontSizeValue}
+          onChange={(v) => setFontSizeValue(toNumber(v))}
+          getValue={(v) => `${toNumber(v)}px`}
+        />
+      </Section>
 
-        <Card className='w-full mt-2'>
-          <CardHeader className='flex'>
-            <WhiteBoardLogo />
-            <p className='text-md ml-2'>写字板</p>
-          </CardHeader>
-          <CardBody className='py-2 flex'>
-            <div className='w-full flex items-center justify-between'>
-              {/* 手写笔 */}
-              <Button
-                isIconOnly
-                style={{ marginLeft: '0.5rem' }}
-                className={boardTool === 'pen' ? ' bg-gray-400' : ''}
-                onClick={() => setBoardTool('pen')}>
-                <PenLogo />
-              </Button>
-
-              {/* 橡皮擦 */}
-              <Button
-                isIconOnly
-                style={{ marginLeft: '0.5rem' }}
-                className={boardTool === 'rubber' ? ' bg-gray-400' : ''}
-                onClick={() => setBoardTool('rubber')}>
-                <RubberLogo />
-              </Button>
-
-              {/* 画笔宽度 */}
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button
-                    isIconOnly
-                    className='ml-2'>
-                    <PenSizeLogo />
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu
-                  aria-label='Select a penSize'
-                  variant='shadow'
-                  disallowEmptySelection
-                  selectionMode='single'
-                  selectedKeys={penSize !== '2' ? ['2'] : [penSize]}
-                  onSelectionChange={handlePenSize}>
-                  {board_pen_size.map((item) => (
-                    <DropdownItem
-                      key={item.label}
-                      value={item.value}>
-                      {item.label}
-                    </DropdownItem>
-                  ))}
-                </DropdownMenu>
-              </Dropdown>
-
-              {/* 画笔颜色 */}
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button
-                    isIconOnly
-                    className='ml-2'
-                    style={{ backgroundColor: board_pen_color }}>
-                    <PenColorLogo />
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu
-                  aria-label='Select a color'
-                  variant='flat'
-                  disallowEmptySelection
-                  selectionMode='single'>
-                  <DropdownItem textValue='color'>
-                    <div className='m-2'>
-                      <CirclePicker
-                        colors={[
-                          '#1f2937',
-                          '#e23922',
-                          '#9c27b0',
-                          '#673ab7',
-                          '#3f51b5',
-                          '#2196f3',
-                          '#03a9f4',
-                          '#00bcd4',
-                          '#009688',
-                          '#4caf50',
-                          '#8bc34a',
-                          '#cddc39',
-                        ]}
-                        onChangeComplete={handleChangeBoardPenColor}
-                      />
-                    </div>
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-
-              {/* 截图选区 */}
-              <Button
-                isIconOnly
-                className={isOpenSelectArea !== false ? ' bg-gray-400' : ''}
-                onClick={() => setIsOpenSelectArea(!isOpenSelectArea)}>
-                <SnipScreenShotLogo />
-              </Button>
-            </div>
-          </CardBody>
-        </Card>
-
-        <Divider />
-
+      <Section title='作者水印'>
         <Input
-          label='作者'
-          type='search'
-          placeholder='输入作者'
+          size='sm'
+          aria-label='作者'
+          placeholder='输入作者，留空则不显示'
           value={authorValue}
           onValueChange={setAuthorValue}
-          className='py-2'
+          isClearable
+          onClear={() => setAuthorValue('')}
         />
         <Tabs
-          className='w-full my-2'
-          classNames={{
-            tabList: 'w-full',
-          }}
-          onSelectionChange={handleAuthorPosition}
-          aria-label='Options'>
-          {authorPositionList.map((item: any) => (
+          size='sm'
+          fullWidth
+          aria-label='水印位置'
+          selectedKey={authorPositionId}
+          onSelectionChange={(k) => handleAuthorPosition(String(k))}>
+          {authorPositionList.map((item) => (
             <Tab
-              title={item.position}
               key={item.id}
+              title={
+                <span
+                  title={item.label}
+                  aria-label={item.label}
+                  className='flex items-center [&>svg]:h-4 [&>svg]:w-4'>
+                  {item.position}
+                </span>
+              }
             />
           ))}
         </Tabs>
-      </div>
+      </Section>
+    </>
+  )
+}
 
-      <div className='w-full mt-4 px-4 bg-[#181f27]'>
-        <div className='text-gray-100 text-sm py-2'>下载图像</div>
-        <div className='flex justify-between my-3'>
+export function DrawSection() {
+  const {
+    boardTool,
+    setBoardTool,
+    penSize,
+    setPenSize,
+    board_pen_color,
+    setBoardPenColor,
+    lines,
+    undoLine,
+    clearLines,
+    isOpenSelectArea,
+    setIsOpenSelectArea,
+  } = useContext(ImgContext)
+
+  return (
+    <>
+      <Section
+        title='画板'
+        extra={
+          <span className='hidden text-[11px] text-zinc-500 lg:inline'>
+            ⌘ / Ctrl + Z 撤销
+          </span>
+        }>
+        <Tabs
+          size='sm'
+          fullWidth
+          aria-label='画板工具'
+          selectedKey={boardTool}
+          onSelectionChange={(k) => setBoardTool(k as BoardTool)}>
+          <Tab
+            key='none'
+            title={
+              <span className='flex items-center gap-1.5'>
+                <HandIcon size={15} />
+                关闭
+              </span>
+            }
+          />
+          <Tab
+            key='pen'
+            title={
+              <span className='flex items-center gap-1.5 [&_svg]:h-[15px] [&_svg]:w-[15px]'>
+                <PenLogo />
+                画笔
+              </span>
+            }
+          />
+          <Tab
+            key='rubber'
+            title={
+              <span className='flex items-center gap-1.5 [&_svg]:h-[15px] [&_svg]:w-[15px]'>
+                <RubberLogo />
+                橡皮
+              </span>
+            }
+          />
+        </Tabs>
+
+        {boardTool === 'none' && (
+          <p className='text-[11px] text-zinc-500'>
+            选择「画笔」后，可以直接在画布上涂鸦
+          </p>
+        )}
+
+        <Field label='粗细'>
+          <div className='grid grid-cols-6 gap-1.5'>
+            {PEN_SIZES.map((s) => (
+              <button
+                key={s}
+                type='button'
+                aria-label={`粗细 ${s}`}
+                onClick={() => setPenSize(s)}
+                className={`flex h-9 items-center justify-center rounded-lg border transition ${
+                  penSize === s
+                    ? 'border-primary bg-primary/15'
+                    : 'border-white/10 bg-white/[0.03] hover:border-white/25'
+                }`}>
+                <span
+                  className='block rounded-full bg-white'
+                  style={{
+                    width: Math.min(s * 1.4 + 2, 18),
+                    height: Math.min(s * 1.4 + 2, 18),
+                  }}
+                />
+              </button>
+            ))}
+          </div>
+        </Field>
+
+        <Field label='颜色'>
+          <ColorSwatches
+            colors={PEN_COLORS}
+            value={board_pen_color}
+            onChange={setBoardPenColor}
+          />
+        </Field>
+
+        <div className='grid grid-cols-2 gap-2'>
           <Button
+            size='sm'
             variant='flat'
-            onClick={() => handleDownloadImage('JPG')}>
-            JPG
+            isDisabled={lines.length === 0}
+            startContent={<UndoIcon size={15} />}
+            onPress={undoLine}>
+            撤销
           </Button>
           <Button
+            size='sm'
             variant='flat'
-            onClick={() => handleDownloadImage('PNG')}>
-            PNG
-          </Button>
-          <Button
-            variant='flat'
-            onClick={() => handleDownloadImage('SVG')}>
-            SVG
+            color='danger'
+            isDisabled={lines.length === 0}
+            startContent={<TrashIcon size={15} />}
+            onPress={clearLines}>
+            清空
           </Button>
         </div>
+      </Section>
+
+      <Section title='导出区域'>
+        <Switch
+          size='sm'
+          isSelected={isOpenSelectArea}
+          onValueChange={setIsOpenSelectArea}>
+          <span className='text-sm'>只导出选中的区域</span>
+        </Switch>
+        <p className='text-[11px] text-zinc-500'>
+          打开后在画布上拖动选框，拖右下角圆点调整大小
+        </p>
+      </Section>
+    </>
+  )
+}
+
+/* ---------------- 下载 ---------------- */
+
+// 桌面端：右侧底部的下载区
+export function DownloadActions() {
+  const { handleDownloadImage, isDownloading } =
+    useContext(ImageDownloadContext)
+  const { isOpenSelectArea } = useContext(ImgContext)
+
+  return (
+    <div className='space-y-2'>
+      <div className='flex items-center justify-between text-xs text-zinc-400'>
+        <span>下载图片</span>
+        {isOpenSelectArea && <span className='text-primary'>仅导出选区</span>}
       </div>
+      <Button
+        fullWidth
+        color='primary'
+        isLoading={isDownloading}
+        startContent={isDownloading ? null : <DownloadIcon />}
+        onPress={() => handleDownloadImage('PNG')}>
+        下载 PNG
+      </Button>
+      <div className='grid grid-cols-2 gap-2'>
+        <Button
+          size='sm'
+          variant='flat'
+          isDisabled={isDownloading}
+          onPress={() => handleDownloadImage('JPG')}>
+          JPG
+        </Button>
+        <Button
+          size='sm'
+          variant='flat'
+          isDisabled={isDownloading}
+          onPress={() => handleDownloadImage('SVG')}>
+          SVG
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+// 移动端：顶部的导出菜单
+export function DownloadMenu() {
+  const { handleDownloadImage, isDownloading } =
+    useContext(ImageDownloadContext)
+
+  return (
+    <Dropdown placement='bottom-end'>
+      <DropdownTrigger>
+        <Button
+          size='sm'
+          color='primary'
+          isLoading={isDownloading}
+          startContent={isDownloading ? null : <DownloadIcon size={16} />}>
+          导出
+        </Button>
+      </DropdownTrigger>
+      <DropdownMenu
+        aria-label='导出格式'
+        onAction={(k) => handleDownloadImage(String(k) as DownloadType)}>
+        <DropdownItem
+          key='PNG'
+          description='清晰度高，保留圆角透明'>
+          PNG
+        </DropdownItem>
+        <DropdownItem
+          key='JPG'
+          description='体积更小'>
+          JPG
+        </DropdownItem>
+        <DropdownItem
+          key='SVG'
+          description='矢量格式'>
+          SVG
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  )
+}
+
+// 桌面端右侧面板：全部编辑项
+export default function RightBoard() {
+  return (
+    <div className='space-y-3'>
+      <CanvasSection />
+      <TextSection />
+      <DrawSection />
     </div>
   )
 }

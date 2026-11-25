@@ -1,97 +1,81 @@
-import { useState, useRef, useContext, useEffect } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { Stage, Layer, Line } from 'react-konva'
 import { ImgContext } from '@/context'
 
-interface LineInfo {
-  boardTool: string
-  points: number[]
-  color: string
-  strokeWidth: number
-}
+// 手写板：支持鼠标和触屏
+function HandWriting({ width, height }: { width: number; height: number }) {
+  const { boardTool, penSize, board_pen_color, lines, setLines } =
+    useContext(ImgContext)
+  const isDrawing = useRef(false)
+  const enabled = boardTool !== 'none'
 
-interface ContextProp {
-  boardTool: string
-  penSize: number
-  board_pen_color: string
-}
+  useEffect(() => {
+    const stop = () => {
+      isDrawing.current = false
+    }
+    window.addEventListener('mouseup', stop)
+    window.addEventListener('touchend', stop)
+    return () => {
+      window.removeEventListener('mouseup', stop)
+      window.removeEventListener('touchend', stop)
+    }
+  }, [])
 
-function HandWriting() {
-  const { boardTool, penSize, board_pen_color } =
-    useContext<ContextProp>(ImgContext)
-  const [lines, setLines] = useState<LineInfo[]>([])
-  const isDrawing = useRef<boolean>(false)
-
-  const handleMouseDown = (e: any) => {
+  const handleDown = (e: any) => {
+    if (!enabled) return
+    const pos = e.target.getStage()?.getPointerPosition()
+    if (!pos) return
     isDrawing.current = true
-    const pos = e.target.getStage().getPointerPosition()
-    setLines([
-      ...lines,
+    setLines((prev) => [
+      ...prev,
       {
         boardTool,
         points: [pos.x, pos.y],
         color: board_pen_color,
-        strokeWidth: penSize,
+        // 橡皮擦粗一点更好用
+        strokeWidth: boardTool === 'rubber' ? penSize * 4 : penSize,
       },
     ])
   }
 
-  const handleMouseMove = (e: any) => {
-    if (!isDrawing.current) {
-      return
-    }
-    const stage = e.target.getStage()
-    const point = stage.getPointerPosition()
-    let lastLine = lines[lines.length - 1]
-    // add point
-    lastLine.points = lastLine.points.concat([point.x, point.y])
-
-    // replace last
-    lines.splice(lines.length - 1, 1, lastLine)
-    setLines([...lines])
+  const handleMove = (e: any) => {
+    if (!isDrawing.current) return
+    e.evt?.preventDefault?.()
+    const pos = e.target.getStage()?.getPointerPosition()
+    if (!pos) return
+    setLines((prev) => {
+      if (prev.length === 0) return prev
+      const last = prev[prev.length - 1]
+      return [
+        ...prev.slice(0, -1),
+        { ...last, points: [...last.points, pos.x, pos.y] },
+      ]
+    })
   }
 
-  const handleMouseUp = () => {
+  const handleUp = () => {
     isDrawing.current = false
   }
 
-  // 撤销逻辑
-  useEffect(() => {
-    // 监听键盘事件
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // 判断一下电脑系统
-      const userAgent = navigator.userAgent.toLowerCase()
-
-      if (userAgent.indexOf('windows') > -1) {
-        // Windows系统
-        if (e.ctrlKey && e.key === 'z') {
-          // 移除最后一条线并更新状态
-          setLines(lines.slice(0, lines.length - 1))
-        }
-      } else if (userAgent.indexOf('mac') > -1) {
-        // Mac系统
-        if (e.metaKey && e.key === 'z') {
-          // 如果'command'键和'z'键同时被按下，移除最后一条线并更新状态
-          setLines(lines.slice(0, lines.length - 1))
-        }
-      }
-    }
-    // 绑定键盘事件监听器
-    window.addEventListener('keydown', handleKeyDown)
-
-    // 清楚监听器
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [lines])
+  if (width <= 0 || height <= 0) return null
 
   return (
-    <div>
+    <div
+      className='absolute inset-0'
+      style={{
+        pointerEvents: enabled ? 'auto' : 'none',
+        touchAction: enabled ? 'none' : 'auto',
+        cursor: enabled ? 'crosshair' : 'default',
+      }}>
       <Stage
-        width={window.innerWidth}
-        height={window.innerHeight}
-        onMouseDown={handleMouseDown}
-        onMousemove={handleMouseMove}
-        onMouseup={handleMouseUp}>
+        width={width}
+        height={height}
+        onMouseDown={handleDown}
+        onMouseMove={handleMove}
+        onMouseUp={handleUp}
+        onTouchStart={handleDown}
+        onTouchMove={handleMove}
+        onTouchEnd={handleUp}>
         <Layer>
           {lines.map((line, i) => (
             <Line

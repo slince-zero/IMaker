@@ -4,6 +4,9 @@ import {
   useState,
   KeyboardEvent,
   ReactNode,
+  ReactElement,
+  Dispatch,
+  SetStateAction,
 } from 'react'
 import ImageItem from '@/page/left/ImageItem'
 
@@ -15,10 +18,149 @@ import {
   ToprightIcon,
 } from '@/page/right/posotion-logo'
 
-export const ImgContext = createContext({
-  imgList: [],
-  setImgList: () => {},
-} as any)
+export type BoardTool = 'none' | 'pen' | 'rubber'
+
+export interface LineInfo {
+  boardTool: BoardTool
+  points: number[]
+  color: string
+  strokeWidth: number
+}
+
+export interface SelectArea {
+  left: number
+  top: number
+  width: number
+  height: number
+}
+
+export interface CanvasImage {
+  id?: string
+  urls?: { regular?: string; small?: string }
+  alt_description?: string | null
+}
+
+export interface AuthorPositionStyle {
+  position?: 'absolute'
+  top?: string
+  bottom?: string
+  left?: string
+  right?: string
+}
+
+export interface AuthorPositionItem {
+  id: string
+  label: string
+  position: ReactElement
+  value: AuthorPositionStyle
+}
+
+type Setter<T> = Dispatch<SetStateAction<T>>
+
+export interface ImgContextValue {
+  // 图库
+  imageList: ImageItem[]
+  searchValue: string
+  setSearchValue: Setter<string>
+  isLoading: boolean
+  getImage: (searchText?: string) => Promise<void>
+  onSearchKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void
+  imgInfo: CanvasImage
+  setImgInfo: Setter<CanvasImage>
+  uploadImage: (file: File) => void
+  uploadCurrentImage: CanvasImage | null
+  isUpload: boolean
+  setIsUpload: Setter<boolean>
+  // AI
+  aiValue: string
+  setAiValue: Setter<string>
+  aiResult: string | null
+  aiError: string
+  loadingAIImage: boolean
+  handleGenerateAIImage: () => Promise<void>
+  handleSubmitAIImage: () => void
+  // 画布
+  proportionValue: string
+  setProportionValue: Setter<string>
+  handleProportionValue: (value: string) => void
+  isCircle: boolean
+  setIsCircle: Setter<boolean>
+  handleIsCircle: () => void
+  hexColor: string
+  setHexColor: Setter<string>
+  handleChangeCompleteColor: (color: { hex: string }) => void
+  opacityValue: number
+  setOpacityValue: Setter<number>
+  // 文字
+  titleValue: string
+  setTitleValue: Setter<string>
+  fontValue: string
+  setFontValue: Setter<string>
+  handleChangeFont: (value: string) => void
+  fontSizeValue: number
+  setFontSizeValue: Setter<number>
+  handleChangeFontSize: (value: number) => void
+  authorValue: string
+  setAuthorValue: Setter<string>
+  authorPositionId: string
+  authorPosition: AuthorPositionStyle
+  authorPositionList: AuthorPositionItem[]
+  handleAuthorPosition: (id: string) => void
+  // 画板
+  boardTool: BoardTool
+  setBoardTool: Setter<BoardTool>
+  penSize: number
+  setPenSize: Setter<number>
+  handlePenSize: (size: number) => void
+  board_pen_color: string
+  setBoardPenColor: Setter<string>
+  handleChangeBoardPenColor: (color: { hex: string }) => void
+  lines: LineInfo[]
+  setLines: Setter<LineInfo[]>
+  undoLine: () => void
+  clearLines: () => void
+  // 导出选区
+  isOpenSelectArea: boolean
+  setIsOpenSelectArea: Setter<boolean>
+  selectArea: SelectArea
+  setSelectArea: Setter<SelectArea>
+}
+
+export const ImgContext = createContext<ImgContextValue>({} as ImgContextValue)
+
+// 作者水印位置：左下、右下、居中（跟随标题）、左上、右上
+const authorPositionList: AuthorPositionItem[] = [
+  {
+    id: 'bottom-left',
+    label: '左下',
+    position: <BottomLeftIcon />,
+    value: { position: 'absolute', bottom: '0', left: '0' },
+  },
+  {
+    id: 'bottom-right',
+    label: '右下',
+    position: <BottomRightIcon />,
+    value: { position: 'absolute', bottom: '0', right: '0' },
+  },
+  {
+    id: 'middle',
+    label: '居中',
+    position: <MiddleIcon />,
+    value: {},
+  },
+  {
+    id: 'top-left',
+    label: '左上',
+    position: <TopLeftIcon />,
+    value: { position: 'absolute', top: '0', left: '0' },
+  },
+  {
+    id: 'top-right',
+    label: '右上',
+    position: <ToprightIcon />,
+    value: { position: 'absolute', top: '0', right: '0' },
+  },
+]
 
 export default function ImgContextProvider({
   children,
@@ -27,110 +169,123 @@ export default function ImgContextProvider({
 }) {
   const [imageList, setImageList] = useState<ImageItem[]>([])
   const [searchValue, setSearchValue] = useState('')
-  // 搜索 button 的loading
   const [isLoading, setIsLoading] = useState(false)
-  // setImgInfo在left组件中存储图片数据，imgInfo给center组件传递图片数据
-  const [imgInfo, setImgInfo] = useState<any>({})
-  // 用户上传图片的state
-  const [uploadCurrentImage, setUploadCurrentImage] = useState<any>(null)
-  // 用于判断是否是上传图片，还是默认通过API获取的图片
+  // 当前选中的图库图片
+  const [imgInfo, setImgInfo] = useState<CanvasImage>({})
+  // 用户上传的图片
+  const [uploadCurrentImage, setUploadCurrentImage] =
+    useState<CanvasImage | null>(null)
+  // 当前画布使用的是上传图片还是图库图片
   const [isUpload, setIsUpload] = useState(false)
 
-  // 用于用户输入的AI图片描述
+  // AI 生成
   const [aiValue, setAiValue] = useState('')
-  // 用于AI生成图片的url
-  const [aiResult, setAiResult] = useState<any>(null)
-  // loading
+  const [aiResult, setAiResult] = useState<string | null>(null)
+  const [aiError, setAiError] = useState('')
   const [loadingAIImage, setLoadingAIImage] = useState(false)
 
-  // 图片比例
+  // 画布
   const [proportionValue, setProportionValue] = useState('aspect-[16/9]')
-
-  // 图片形状（圆角或者方形）
   const [isCircle, setIsCircle] = useState(true)
-
-  // 作者标签值
-  const [authorValue, setAuthorValue] = useState('@IMker')
-
-  // 作者水印位置
-  const [authorPosition, setAuthorPosition] = useState<any>('')
-  // 标题&文案
-  const [titleValue, setTitleValue] = useState('花开花落，你陪了我多少年')
-
-  // 字体
-  const [fontValue, setFontValue] = useState('font-dingtalk')
-
-  // 字体大小
-  const [fontSizeValue, setFontSizeValue] = useState('')
-
-  // 设置遮罩层颜色
   const [hexColor, setHexColor] = useState('#3F51B5')
+  const [opacityValue, setOpacityValue] = useState(0.15)
 
-  // 设置遮罩颜色透明度
-  const [opacityValue, setOpacityValue] = useState(0.1)
+  // 文字
+  const [titleValue, setTitleValue] = useState('花开花落，你陪了我多少年')
+  const [fontValue, setFontValue] = useState('font-dingtalk')
+  const [fontSizeValue, setFontSizeValue] = useState(32)
+  const [authorValue, setAuthorValue] = useState('@IMaker')
+  const [authorPositionId, setAuthorPositionId] = useState('bottom-right')
 
-  // 设置白板工具（铅笔或橡皮擦）
-  const [boardTool, setBoardTool] = useState('pen')
+  // 画板：默认关闭，避免误触（尤其是移动端）
+  const [boardTool, setBoardTool] = useState<BoardTool>('none')
+  const [penSize, setPenSize] = useState<number>(3)
+  const [board_pen_color, setBoardPenColor] = useState('#E23922')
+  const [lines, setLines] = useState<LineInfo[]>([])
 
-  // 设置铅笔大小
-  const [penSize, setPenSize] = useState<number>(2)
-
-  // 设置铅笔颜色
-  const [board_pen_color, setBoardPenColor] = useState('#e23922')
-
-  // 是否开启截图选区
+  // 导出选区
   const [isOpenSelectArea, setIsOpenSelectArea] = useState(false)
+  const [selectArea, setSelectArea] = useState<SelectArea>({
+    left: 24,
+    top: 24,
+    width: 200,
+    height: 120,
+  })
 
   // 获取图片
   async function getImage(searchText: string = '') {
+    setIsLoading(true)
     try {
-      setIsLoading(true)
       const accessKey = import.meta.env.VITE_PUBLIC_UNSPLASH_API_KEY
-      const endpoint =
-        searchText.length > 0
-          ? `https://api.unsplash.com/search/photos`
-          : `https://api.unsplash.com/photos`
-      const queryParam = searchText
-        ? `&query=${encodeURIComponent(searchText)}`
-        : ''
+      const keyword = searchText.trim()
+      const endpoint = keyword
+        ? 'https://api.unsplash.com/search/photos'
+        : 'https://api.unsplash.com/photos'
+      // 搜索时从第一页开始，避免随机页码导致没有结果
+      const page = keyword ? 1 : Math.floor(Math.random() * 100) + 1
+      const queryParam = keyword ? `&query=${encodeURIComponent(keyword)}` : ''
       const res = await fetch(
-        `${endpoint}?per_page=30&page=${Math.floor(
-          100 * Math.random()
-        )}${queryParam}&client_id=${accessKey}`
+        `${endpoint}?per_page=30&page=${page}${queryParam}&client_id=${accessKey}`
       )
       const data = await res.json()
-
-      if (data && data.results) {
-        // 如果是使用搜索API，结果会在data.results中
-        setImageList(data.results)
-      } else {
-        setImageList(data) // 直接访问 Unsplash collections/photos 数据在顶层
+      const list: ImageItem[] = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.results)
+        ? data.results
+        : []
+      setImageList(list)
+      // 首次进入时自动选中第一张，画布不再是空的
+      if (list.length > 0) {
+        setImgInfo((prev) => (prev?.urls?.regular ? prev : list[0]))
       }
     } catch (e) {
       console.error(e)
+      setImageList([])
     } finally {
       setIsLoading(false)
-      setSearchValue('')
     }
   }
 
   useEffect(() => {
     getImage()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // 按下回车事件
-  function onSearchKeyDown(e: KeyboardEvent<HTMLInputElement> | KeyboardEvent) {
+  // 撤销：Ctrl/⌘ + Z，在输入框里时不拦截
+  useEffect(() => {
+    const onKeyDown = (e: globalThis.KeyboardEvent) => {
+      const target = e.target as HTMLElement | null
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable)
+      ) {
+        return
+      }
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'z') {
+        e.preventDefault()
+        setLines((prev) => prev.slice(0, -1))
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
+
+  function onSearchKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
       getImage(searchValue)
     }
   }
 
-  // 上传图片
-  function uploadImage(file: any) {
+  function uploadImage(file: File) {
     try {
       if (file) {
-        const newImageUrl = URL.createObjectURL(file) // 简易本地示例
-        setUploadCurrentImage({ urls: { regular: newImageUrl } }) // 设置为能够展示格式
+        if (uploadCurrentImage?.urls?.regular) {
+          URL.revokeObjectURL(uploadCurrentImage.urls.regular)
+        }
+        const newImageUrl = URL.createObjectURL(file)
+        setUploadCurrentImage({ urls: { regular: newImageUrl } })
         setIsUpload(true)
       }
     } catch (e) {
@@ -138,108 +293,48 @@ export default function ImgContextProvider({
     }
   }
 
-  // 选择图片比例
-  function handleProportionValue(e: React.ChangeEvent<HTMLSelectElement>) {
-    console.log(e.target.value)
-
-    setProportionValue(e.target.value)
+  function handleProportionValue(value: string) {
+    setProportionValue(value)
   }
 
-  // 选择形状
   function handleIsCircle() {
-    setIsCircle(!isCircle)
+    setIsCircle((v) => !v)
   }
 
-  // 切换字体
-  function handleChangeFont(e: React.ChangeEvent<HTMLSelectElement>) {
-    setFontValue(e.target.value)
+  function handleChangeFont(value: string) {
+    if (value) setFontValue(value)
   }
 
-  // 设置字体大小
-  function handleChangeFontSize(value: string) {
+  function handleChangeFontSize(value: number) {
     setFontSizeValue(value)
   }
 
-  // 作者水印位置：左上、左下、中间、右下、右上
-  const authorPositionList = [
-    {
-      id: 'bottom-left',
-      position: <BottomLeftIcon />,
-      value: {
-        bottom: '0',
-        padding: '0.75rem',
-        position: 'absolute',
-      },
-    },
-    {
-      id: 'bottom-right',
-      position: <BottomRightIcon />,
-      value: {
-        bottom: '0',
-        right: '0',
-        padding: '0.75rem',
-        position: 'absolute',
-      },
-    },
-    {
-      id: 'middle',
-      position: <MiddleIcon />,
-      value: {
-        top: '60%',
-        left: '50%',
-        position: 'absolute',
-      },
-    },
-    {
-      id: 'top-left',
-      position: <TopLeftIcon />,
-      value: {
-        top: '0',
-        padding: '0.75rem',
-        position: 'absolute',
-      },
-    },
-    {
-      id: 'top-right',
-      position: <ToprightIcon />,
-      value: {
-        top: '0',
-        right: '0',
-        padding: '0.75rem',
-        position: 'absolute',
-      },
-    },
-  ]
-
-  // 设置作者水印位置
-  function handleAuthorPosition(e: any) {
-    // console.log(e);
-    const matchItem = authorPositionList.find((item) => item.id === e)
-
-    if (matchItem) {
-      setAuthorPosition(matchItem.value)
-    }
-    // setAuthorPosition(value)
+  function handleAuthorPosition(id: string) {
+    setAuthorPositionId(id)
   }
 
-  // 选择遮罩颜色
-  function handleChangeCompleteColor(color: any) {
+  function handleChangeCompleteColor(color: { hex: string }) {
     setHexColor(color.hex.toUpperCase())
   }
 
-  // 设置铅笔大小
-  function handlePenSize(val: Set<any>) {
-    let newArr = Array.from(val)
-    setPenSize(newArr[0])
+  function handlePenSize(size: number) {
+    setPenSize(Number(size))
   }
 
-  // 设置铅笔颜色
-  function handleChangeBoardPenColor(color: any) {
+  function handleChangeBoardPenColor(color: { hex: string }) {
     setBoardPenColor(color.hex.toUpperCase())
   }
 
-  // 发送请求
-  async function query(data: any) {
+  function undoLine() {
+    setLines((prev) => prev.slice(0, -1))
+  }
+
+  function clearLines() {
+    setLines([])
+  }
+
+  // 调用 Hugging Face 生成图片
+  async function query(data: { inputs: string }) {
     const accessToken = import.meta.env.VITE_PUBLIC_HUGGINGFACE_API_KEY
     const response = await fetch(
       'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0',
@@ -251,89 +346,106 @@ export default function ImgContextProvider({
         body: JSON.stringify(data),
       }
     )
-    const result = await response.blob()
-    return result
+    if (!response.ok) {
+      throw new Error(await response.text())
+    }
+    return response.blob()
   }
 
-  // 生成AI图片
-  function handleGenerateAIImage() {
+  async function handleGenerateAIImage() {
+    if (!aiValue.trim()) {
+      setAiError('请先输入图片描述')
+      return
+    }
+    setAiError('')
+    setLoadingAIImage(true)
     try {
-      setLoadingAIImage(true)
-      const data = {
-        inputs: aiValue,
+      const blob = await query({ inputs: aiValue.trim() })
+      if (!blob.type.startsWith('image/')) {
+        throw new Error('返回的不是图片')
       }
-      query(data).then((res) => {
-        const url = URL.createObjectURL(res)
-        setAiResult(url)
-        setLoadingAIImage(false)
-      })
+      setAiResult(URL.createObjectURL(blob))
     } catch (e) {
-      console.log(e)
+      console.error(e)
+      setAiError('生成失败，模型可能正在加载，请稍后再试')
+    } finally {
+      setLoadingAIImage(false)
     }
   }
 
-  // 提交AI图片到center组件
+  // 把 AI 图片放到画布上
   function handleSubmitAIImage() {
-    console.log('111', aiResult)
-
-    setImgInfo({
-      urls: {
-        regular: aiResult,
-      },
-    })
+    if (!aiResult) return
+    setImgInfo({ urls: { regular: aiResult, small: aiResult } })
+    setIsUpload(false)
   }
+
+  const authorPosition =
+    authorPositionList.find((item) => item.id === authorPositionId)?.value ?? {}
 
   return (
     <ImgContext.Provider
       value={{
         imageList,
-        setImageList,
         searchValue,
         setSearchValue,
         isLoading,
-        setIsLoading,
         getImage,
         onSearchKeyDown,
-        setImgInfo,
         imgInfo,
+        setImgInfo,
         uploadImage,
         uploadCurrentImage,
         isUpload,
         setIsUpload,
-        authorValue,
-        setAuthorValue,
+        aiValue,
+        setAiValue,
+        aiResult,
+        aiError,
+        loadingAIImage,
+        handleGenerateAIImage,
+        handleSubmitAIImage,
+        proportionValue,
+        setProportionValue,
+        handleProportionValue,
+        isCircle,
+        setIsCircle,
+        handleIsCircle,
+        hexColor,
+        setHexColor,
+        handleChangeCompleteColor,
+        opacityValue,
+        setOpacityValue,
         titleValue,
         setTitleValue,
         fontValue,
         setFontValue,
         handleChangeFont,
         fontSizeValue,
+        setFontSizeValue,
         handleChangeFontSize,
+        authorValue,
+        setAuthorValue,
+        authorPositionId,
         authorPosition,
         authorPositionList,
         handleAuthorPosition,
-        handleChangeCompleteColor,
-        hexColor,
-        opacityValue,
-        setOpacityValue,
-        proportionValue,
-        handleProportionValue,
         boardTool,
         setBoardTool,
         penSize,
+        setPenSize,
         handlePenSize,
         board_pen_color,
-        setHexColor,
+        setBoardPenColor,
         handleChangeBoardPenColor,
-        isCircle,
-        handleIsCircle,
-        setAiValue,
-        aiResult,
-        loadingAIImage,
-        handleGenerateAIImage,
-        handleSubmitAIImage,
+        lines,
+        setLines,
+        undoLine,
+        clearLines,
         isOpenSelectArea,
         setIsOpenSelectArea,
+        selectArea,
+        setSelectArea,
       }}>
       {children}
     </ImgContext.Provider>

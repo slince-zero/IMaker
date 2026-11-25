@@ -6,10 +6,10 @@ import ImgContextProvider from '@/context'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <NextUIProvider>
-    <main className='dark text-foreground bg-background'>
+    <div className='dark text-foreground bg-background'>
       <ImgContextProvider>
         <App />
       </ImgContextProvider>
-    </main>
+    </div>
   </NextUIProvider>
 )

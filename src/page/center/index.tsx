@@ -1,9 +1,12 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { ImgContext } from '@/context'
 import { ImageDownloadContext } from '@/context/imageDownload'
 import { Spinner } from '@nextui-org/react'
 import HandWriting from '@/page/right/hand-writing'
 import ScreenCapture from './dragScreenShot'
+import { getAspectRatio } from '@/config/options'
+import { ImageIcon } from '@/components/icons'
+
 export default function CenterBoard() {
   const {
     imgInfo,
@@ -14,147 +17,148 @@ export default function CenterBoard() {
     fontValue,
     fontSizeValue,
     authorPosition,
+    authorPositionId,
     hexColor,
     opacityValue,
     proportionValue,
     isCircle,
     isOpenSelectArea,
   } = useContext(ImgContext)
+  const { imageContainerRef } = useContext(ImageDownloadContext)
 
-  const { imageContainerRef, newRef } = useContext(ImageDownloadContext)
+  const areaRef = useRef<HTMLDivElement>(null)
+  const [size, setSize] = useState({ width: 0, height: 0 })
+  const ratio = getAspectRatio(proportionValue)
 
-  const [isLoading, setIsLoading] = useState(false)
-
-  useEffect(() => {
-    if (imgInfo?.urls != null) {
-      setIsLoading(true)
+  // 根据可用空间和比例计算画布尺寸，保证 PC / 移动端都能完整显示
+  useLayoutEffect(() => {
+    const el = areaRef.current
+    if (!el) return
+    const update = () => {
+      const style = getComputedStyle(el)
+      const availW =
+        el.clientWidth -
+        parseFloat(style.paddingLeft) -
+        parseFloat(style.paddingRight)
+      const availH =
+        el.clientHeight -
+        parseFloat(style.paddingTop) -
+        parseFloat(style.paddingBottom)
+      if (availW <= 0 || availH <= 0) return
+      let width = availW
+      let height = availW / ratio
+      if (height > availH) {
+        height = availH
+        width = availH * ratio
+      }
+      setSize({ width: Math.floor(width), height: Math.floor(height) })
     }
-  }, [imgInfo])
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [ratio])
 
-  // 设置鼠标样式-存在一些问题，现在可以正确显示了，不过存在精度问题，这里就不展示了
-  // useEffect(() => {
-  //   const centerBoardElement = document.getElementsByClassName(
-  //     'img-area'
-  //   )[0] as HTMLElement
-  //   if (boardTool === 'pen') {
-  //     centerBoardElement.style.cursor = 'url(/pen.svg),auto'
-  //   } else if (boardTool === 'rubber') {
-  //     centerBoardElement.style.cursor = 'url(/rubber.svg),auto'
-  //   }
+  const current = isUpload ? uploadCurrentImage : imgInfo
+  const src = current?.urls?.regular
+
+  const [loaded, setLoaded] = useState(false)
+  useEffect(() => {
+    setLoaded(false)
+  }, [src])
+
+  const radius = isCircle ? '1.5rem' : '0px'
+  const isMiddleAuthor = authorPositionId === 'middle'
 
   return (
     <div
-      className='relative img-area'
-      ref={imageContainerRef}>
-      {isUpload === true ? (
+      ref={areaRef}
+      className='flex h-full w-full items-center justify-center p-3 sm:p-6 lg:p-10'>
+      <div
+        className='shadow-2xl shadow-black/60'
+        style={{
+          width: size.width,
+          height: size.height,
+          borderRadius: radius,
+          visibility: size.width ? 'visible' : 'hidden',
+        }}>
         <div
-          style={{ maxHeight: '90vh' }}
-          className={proportionValue == '' ? 'aspect-[16/9]' : proportionValue}>
-          {uploadCurrentImage?.urls?.regular && (
+          ref={imageContainerRef}
+          className='img-area relative h-full w-full overflow-hidden bg-zinc-800 text-white'
+          style={{ borderRadius: radius }}>
+          {src ? (
             <img
-              src={uploadCurrentImage?.urls?.regular}
-              onLoad={() => setIsLoading(false)}
+              key={src}
+              src={src}
+              alt={current?.alt_description ?? ''}
+              onLoad={() => setLoaded(true)}
+              onError={() => setLoaded(true)}
+              className='absolute inset-0 h-full w-full object-cover'
+            />
+          ) : (
+            <div
+              className='absolute inset-0 flex flex-col items-center justify-center gap-2 text-sm text-zinc-400'
+              data-export-ignore='true'>
+              <ImageIcon size={32} />
+              从图库选择或上传一张图片
+            </div>
+          )}
+
+          {/* 遮罩 */}
+          <div
+            className='pointer-events-none absolute inset-0'
+            style={{ backgroundColor: hexColor, opacity: opacityValue }}
+          />
+
+          {/* 标题 & 文案 */}
+          <div className='pointer-events-none absolute inset-0 flex flex-col items-center justify-center p-[6%] text-center'>
+            <div
+              className='whitespace-pre-wrap break-words leading-snug'
               style={{
-                objectFit: 'cover',
-                height: '100%',
-                width: '100%',
-              }}
-              className={!isCircle ? '' : 'rounded-3xl'}
+                fontFamily: fontValue,
+                fontSize: fontSizeValue,
+                textShadow: '0 2px 12px rgba(0,0,0,0.35)',
+              }}>
+              {titleValue}
+            </div>
+            {isMiddleAuthor && authorValue && (
+              <div className='mt-3 text-sm opacity-90'>{authorValue}</div>
+            )}
+          </div>
+
+          {/* 作者水印 */}
+          {!isMiddleAuthor && authorValue && (
+            <div
+              className='pointer-events-none p-3 text-sm sm:p-4'
+              style={{ ...authorPosition, textShadow: '0 1px 6px rgba(0,0,0,0.4)' }}>
+              {authorValue}
+            </div>
+          )}
+
+          {/* 手写板 */}
+          <div className='absolute inset-0 z-10'>
+            <HandWriting
+              width={size.width}
+              height={size.height}
+            />
+          </div>
+
+          {/* 导出选区 */}
+          {isOpenSelectArea && (
+            <ScreenCapture
+              boundsWidth={size.width}
+              boundsHeight={size.height}
             />
           )}
-        </div>
-      ) : (
-        <div
-          style={{ maxHeight: '90vh' }}
-          className={proportionValue == '' ? 'aspect-[16/9]' : proportionValue}>
-          {imgInfo?.urls?.regular && (
-            <img
-              src={imgInfo?.urls?.regular}
-              alt={imgInfo?.alt_description}
-              onLoad={() => setIsLoading(false)}
-              style={{
-                objectFit: 'cover',
-                height: '100%',
-                width: '100%',
-              }}
-              className={!isCircle ? '' : 'rounded-3xl'}
-            />
+
+          {src && !loaded && (
+            <div
+              className='absolute inset-0 z-30 flex items-center justify-center bg-black/20'
+              data-export-ignore='true'>
+              <Spinner color='warning' />
+            </div>
           )}
         </div>
-      )}
-
-      <div
-        ref={newRef}
-        className='screenCapture'
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          top: '0',
-          left: '0',
-          zIndex: 2,
-          display: isOpenSelectArea ? 'block' : 'none',
-        }}>
-        <ScreenCapture />
-      </div>
-
-      <div
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          top: '0',
-          left: '0',
-          borderRadius: isCircle ? '1.5rem' : '0',
-          backgroundColor: hexColor,
-          opacity: opacityValue,
-        }}></div>
-
-      {/*object-cover 是object-fit: cover; 用来确保图片在适应各种尺寸的屏幕和设备时都能保持其原始的纵横比，同时避免空白区域或图像失真。 */}
-      {isLoading && (
-        <Spinner
-          label='Loading...'
-          color='warning'
-          className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pt-4'
-        />
-      )}
-      {/* 标题&文案显示在图片上 */}
-      <div
-        className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pt-4'
-        style={{ fontFamily: fontValue, fontSize: fontSizeValue }}>
-        {titleValue}
-      </div>
-
-      {/* autor 显示在图片上 */}
-      <div
-        style={{
-          position: authorPosition?.position,
-          bottom: authorPosition?.bottom,
-          top: authorPosition?.top,
-          left: authorPosition?.left,
-          right: authorPosition?.right,
-          padding: authorPosition?.padding,
-        }}>
-        {authorValue}
-      </div>
-      {/* <div className='absolute bottom-0 right-0 p-3'>
-        {authorValue}
-      </div> */}
-
-      <div
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%,-50%)',
-          borderRadius: '1.5rem',
-          overflow: 'hidden',
-          zIndex: 1,
-        }}
-        className={proportionValue == '' ? 'aspect-[16/9]' : proportionValue}>
-        <HandWriting />
       </div>
     </div>
   )

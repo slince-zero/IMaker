@@ -3,29 +3,70 @@
 @tailwind utilities;
 
 :root {
-  /* 为了解决下拉框的背景和字体颜色不对 */
-  --nextui-content1: 240 5.88% 10%;
   color: aliceblue;
+  -webkit-tap-highlight-color: transparent;
 }
+
 @font-face {
-  font-family: "font-Alibaba";
+  font-family: "font-alibaba";
   src: url("/src/assets/fonts/AlibabaPuHuiTi-3-55-Regular.ttf");
+  font-display: swap;
 }
 @font-face {
   font-family: "font-kingsoft";
   src: url("/src/assets/fonts/Kingsoft_Cloud_Font.ttf");
+  font-display: swap;
 }
 @font-face {
   font-family: "font-xinyiguanhei";
   src: url("/src/assets/fonts/ZiTiQuanXinYiGuanHeiTi.ttf");
+  font-display: swap;
 }
 @font-face {
   font-family: "font-dingtalk";
   src: url("/src/assets/fonts/DingTalk_JinBuTi.ttf");
+  font-display: swap;
+}
+
+html,
+body,
+#root {
+  height: 100%;
 }
 
 body {
   margin: 0;
   min-width: 320px;
-  min-height: 100vh;
+  background: #09090b;
+  overscroll-behavior: none;
+}
+
+/* 画布区域的点阵背景 */
+.canvas-bg {
+  background-color: #09090b;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* 细滚动条 */
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+.thin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+}
+
+/* 移动端输入框字号不小于 16px，避免 iOS 聚焦时自动放大页面 */
+@media (max-width: 1023px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
 }
